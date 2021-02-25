@@ -1,4 +1,4 @@
 # C++ embedded library
 
-## Requremnts
+## Requrements
 tl library
