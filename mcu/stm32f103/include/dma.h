@@ -50,7 +50,7 @@ enum FifoThreshold
   ft34   = 2,
   ftFull = 3
 };
-}; // namespace Dma
+} // namespace Dma
 
 template<int dma>
 struct dma_t;

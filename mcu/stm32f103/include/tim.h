@@ -400,15 +400,15 @@ struct Tim {
 
     static void setUpdateInterrupt(uint32_t priorityGroup,
                                    uint32_t preemptPriority,
-                                   uint32_t subPriority = 0) {
-        Nvic::setPriority(static_cast<Nvic::IrqType>(tim_t<num>::interruptUp), preemptPriority);  //TODO:
+                                   [[maybe_unused]]uint32_t subPriority = 0) {
+        Nvic::setPriority(static_cast<Nvic::IrqType>(tim_t<num>::interruptUp), preemptPriority);  //TODO: add subpriority
         Nvic::enableIrq(static_cast<Nvic::IrqType>(tim_t<num>::interruptUp));
     }
 
     static void setCcInterrupt(/*uint32_t priorityGroup,*/
             uint32_t preemptPriority,
-            uint32_t subPriority = 0) {
-        Nvic::setPriority(static_cast<Nvic::IrqType>(tim_t<num>::interruptCc), preemptPriority);  //TODO:
+            [[maybe_unused]]uint32_t subPriority = 0) {
+        Nvic::setPriority(static_cast<Nvic::IrqType>(tim_t<num>::interruptCc), preemptPriority);  //TODO: add subpriority
         Nvic::enableIrq(static_cast<Nvic::IrqType>(tim_t<num>::interruptCc));
     }
 

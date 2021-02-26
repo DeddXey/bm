@@ -175,7 +175,7 @@ void Dma2Channel1        (void);
 void Dma2Channel2        (void);
 void Dma2Channel3        (void);
 void Dma2Channel4_5      (void);
-};
+}
 
 }
 

@@ -116,26 +116,26 @@ struct Nvic {
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
-        return reinterpret_cast<Regs*volatile>(base);
+        return (volatile Regs *) base;
     }
 
 
-    INLINE static void setPriorityGrouping(Scb::PriorityGrouping priorityGrouping)
+    static void setPriorityGrouping(Scb::PriorityGrouping priorityGrouping)
     {
         Scb::rg()->AIRCR = (Scb::aircrKey << 16) + ((priorityGrouping & 0xf) << Scb::aircrPriGroupPos);
     }
 
-    INLINE static uint32_t getPriorityGrouping() { return ((Scb::rg()->AIRCR >> Scb::aircrPriGroupPos) & 0x0f); }
+    static uint32_t getPriorityGrouping() { return ((Scb::rg()->AIRCR >> Scb::aircrPriGroupPos) & 0x0f); }
 
-    INLINE static void enableIrq(Nvic::IrqType it) { rg()->ISER[it >> 5] = (1 << (it & 0x1f)); }
-    INLINE static void disableIrq(Nvic::IrqType it) { rg()->ICER[it >> 5] = (1 << (it & 0x1f)); }
-    INLINE static bool getPendingIrq(Nvic::IrqType it) { return ((rg()->ISPR[it >> 5] & (1 << (it & 0x1f)))?true:false); }
-    INLINE static void setPendingIrq(Nvic::IrqType it) { rg()->ISPR[it >> 5] = (1 << (it & 0x1f)); }
-    INLINE static void clearPendingIrq(Nvic::IrqType it) { rg()->ICPR[it >> 5] = (1 << (it & 0x1f)); }
-    INLINE static bool getActive(Nvic::IrqType it) { return ((rg()->IABR[it >> 5] & (1 << (it & 0x1f)))?true:false); }
-    INLINE static void setPriority(Nvic::IrqType it, uint32_t priority)
+    static void enableIrq(Nvic::IrqType it) { rg()->ISER[it >> 5] = (1 << (it & 0x1f)); }
+    static void disableIrq(Nvic::IrqType it) { rg()->ICER[it >> 5] = (1 << (it & 0x1f)); }
+    static bool getPendingIrq(Nvic::IrqType it) { return ((rg()->ISPR[it >> 5] & (1 << (it & 0x1f)))?true:false); }
+    static void setPendingIrq(Nvic::IrqType it) { rg()->ISPR[it >> 5] = (1 << (it & 0x1f)); }
+    static void clearPendingIrq(Nvic::IrqType it) { rg()->ICPR[it >> 5] = (1 << (it & 0x1f)); }
+    static bool getActive(Nvic::IrqType it) { return ((rg()->IABR[it >> 5] & (1 << (it & 0x1f)))?true:false); }
+    static void setPriority(Nvic::IrqType it, uint32_t priority)
     {
         if(it < 0) {
             Scb::rg()->SHPR[(it & 0xf) - 4] = ((priority <<(8 - nvicPrioBits)) & 0xff);
@@ -146,7 +146,7 @@ struct Nvic {
 
     }
 
-    INLINE static uint32_t getPriority(Nvic::IrqType it)
+    static uint32_t getPriority(Nvic::IrqType it)
     {
         if(it < 0) {
             return (Scb::rg()->SHPR[(it & 0xf) - 4] >> (8 - nvicPrioBits));
@@ -156,7 +156,7 @@ struct Nvic {
         }
     }
 
-    INLINE static __attribute__((noreturn))  void systemReset()
+    static __attribute__((noreturn))  void systemReset()
     {
         __DSB();
 

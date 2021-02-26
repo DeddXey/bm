@@ -14,7 +14,7 @@ template<>
 struct gpio_t<'A'> {
     constexpr static uint32_t GPIO_BASE = 0x40010800;
 
-    static void INLINE clockEnable(bool en) {
+    static void clockEnable(bool en) {
         Rcc::clockIopA(en);
     }
 };
@@ -23,7 +23,7 @@ template<>
 struct gpio_t<'B'> {
     constexpr static uint32_t GPIO_BASE = 0x40010C00;
 
-    static void INLINE clockEnable(bool en) {
+    static void clockEnable(bool en) {
         Rcc::clockIopB(en);
     }
 };
@@ -32,7 +32,7 @@ template<>
 struct gpio_t<'C'> {
     constexpr static uint32_t GPIO_BASE = 0x40011000;
 
-    static void INLINE clockEnable(bool en) {
+    static void clockEnable(bool en) {
         Rcc::clockIopC(en);
     }
 };
@@ -41,7 +41,7 @@ template<>
 struct gpio_t<'D'> {
     constexpr static uint32_t GPIO_BASE = 0x40011400;
 
-    static void INLINE clockEnable(bool en) {
+    static void clockEnable(bool en) {
         Rcc::clockIopD(en);
     }
 };
@@ -50,7 +50,7 @@ template<>
 struct gpio_t<'E'> {
     constexpr static uint32_t GPIO_BASE = 0x40011800;
 
-    static void INLINE clockEnable(bool en) {
+    static void clockEnable(bool en) {
         Rcc::clockIopE(en);
     }
 };
@@ -165,13 +165,13 @@ struct Gpio {
     ///
     /// \brief Включение тактирования
     ///
-    INLINE static void clockEnable(bool en) {
+    static void clockEnable(bool en) {
         gpio_t<a>::clockEnable(en);
     }
 
     //    ///---------------------------------------------------------------------
     //    template<typename... Args>
-    //    INLINE static void setMode(const PinMode mode,
+    //    static void setMode(const PinMode mode,
     //                               const PinConfiguration configuration,
     //                               const Args... args)
     //    {
@@ -191,7 +191,7 @@ struct Gpio {
     /// \param args список номеров пинов
     ///
     template<typename T>
-    inline static void
+    static void
     setMode(const PinMode mode, const PinConfiguration configuration, const T pos) {
         uint32_t index = (pos & 0x8) >> 3;
         const T pos8 = pos & 0x7;
@@ -210,7 +210,7 @@ struct Gpio {
     /// \param args список номеров пинов
     ///
     template<typename T, typename... Args>
-    inline static void setMode(const PinMode mode,
+    static void setMode(const PinMode mode,
                                const PinConfiguration configuration,
                                const T pos,
                                const Args... args) {
@@ -227,7 +227,7 @@ struct Gpio {
     }
 
     template<typename... Args>
-    INLINE static void setPin(const Args... args) {
+    static void setPin(const Args... args) {
         uint32_t value = tl::setBitGroup(1, 1, args...);
 
         rgRaw()->BSRR = rgRaw()->BSRR | value;
@@ -239,7 +239,7 @@ struct Gpio {
     /// \param args список номеров пинов
     ///
     template<typename... Args>
-    INLINE static void resetPin(const Args... args) {
+    static void resetPin(const Args... args) {
         uint32_t value = tl::setBitGroup(1, 1, args...);
 
         rgRaw()->BSRR = rgRaw()->BSRR | (value << 16);
@@ -252,7 +252,7 @@ struct Gpio {
     /// \param args список номеров пинов
     ///
     template<typename... Args>
-    INLINE static void setOut(uint8_t val, const Args... args) {
+    static void setOut(uint8_t val, const Args... args) {
         uint32_t mask = tl::setBitGroup(1, (1 << 1) - 1, args...);
         uint32_t value = tl::setBitGroup(1, val, args...);
 
@@ -264,7 +264,7 @@ struct Gpio {
     /// \brief Получение значения пина
     /// \param pin номер пина
     ///
-    INLINE static bool get(uint8_t pin) {
+    static bool get(uint8_t pin) {
         return (rgRaw()->IDR & (1 << pin));
     }
 };
