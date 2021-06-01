@@ -467,14 +467,14 @@ struct Rcc {
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    // INLINE constexpr static volatile Regs* rg()
-    // {
-    //     return reinterpret_cast<volatile Regs*>(base);
-    // }
-    constexpr static volatile Regs* rg()
-    {
-        return AddrPtr<Regs, base>::ptr;
-    }
+     constexpr static volatile Regs* rg()
+     {
+         return reinterpret_cast<volatile Regs*>(base);
+     }
+//    constexpr static volatile Regs* rg()
+//    {
+//        return AddrPtr<Regs, base>::ptr;
+//    }
 
 
     ///---------------------------------------------------------------------
@@ -483,7 +483,7 @@ struct Rcc {
     /// \param src источник тактирования
     /// \return true если удачно
     ///
-    INLINE static bool sysClockSelect(SysClockSrc src)
+    static bool sysClockSelect(SysClockSrc src)
     {
         uint16_t timeout = timeoutValue;
         SysClockSrc  value;
@@ -508,7 +508,7 @@ struct Rcc {
     /// \param en требуемое состояние
     /// \return true если удачно
     ///
-    INLINE static bool hseEnable(bool en)
+    static bool hseEnable(bool en)
     {
         uint16_t timeout = timeoutValue;
 
@@ -531,7 +531,7 @@ struct Rcc {
     /// \param en требуемое состояние
     /// \return true если удачно
     ///
-    INLINE static bool pllEnable(bool en)
+    static bool pllEnable(bool en)
     {
         uint16_t timeout = timeoutValue;
 
@@ -555,7 +555,7 @@ struct Rcc {
     /// \param q divider for usb
     /// \param p divider for sysclock
     ///
-    INLINE static void pllSet(uint8_t m, uint16_t n, uint8_t q = 4, PllP p = Rcc::PllP::p2)
+    static void pllSet(uint8_t m, uint16_t n, uint8_t q = 4, PllP p = Rcc::PllP::p2)
     {
         tl::setRegister(rg()->PLLCFGR,
                              PLLCFGR::PLLM, m,
@@ -569,7 +569,7 @@ struct Rcc {
     /// \brief Выбор источника тактирования для главной Pll
     /// \param en true - hse, false - hsi
     ///
-    INLINE static void pllClockSrcSelectHse(bool en)
+    static void pllClockSrcSelectHse(bool en)
     {
         tl::setRegister(rg()->PLLCFGR, PLLCFGR::PLLSRC, en);
     }
@@ -581,7 +581,7 @@ struct Rcc {
     /// \param q divider
     /// \param r divider
     ///
-    INLINE static void pllSaiSet(uint16_t n, uint8_t r, uint8_t q = 4)
+    static void pllSaiSet(uint16_t n, uint8_t r, uint8_t q = 4)
     {
         tl::setRegister(rg()->PLLSAICFGR,
                              PLLSAICFGR::PLLSAIR, r,
@@ -594,7 +594,7 @@ struct Rcc {
     /// \brief Установка делителя APB1
     /// \param prescaler делитель
     ///
-    INLINE static void setApb1Pre(ApbPrescaler prescaler)
+    static void setApb1Pre(ApbPrescaler prescaler)
     {
         tl::setRegister(rg()->CFGR, CFGR::PPRE1, static_cast<uint16_t>(prescaler));
     }
@@ -604,7 +604,7 @@ struct Rcc {
     /// \brief Установка делителя APB2
     /// \param prescaler делитель
     ///
-    INLINE static void setApb2Pre(ApbPrescaler prescaler)
+    static void setApb2Pre(ApbPrescaler prescaler)
     {
         tl::setRegister(rg()->CFGR, CFGR::PPRE2, static_cast<uint16_t>(prescaler));
     }
@@ -613,7 +613,7 @@ struct Rcc {
     /// \brief Получение коэффициента деления для APB1
     /// \return
     ///
-    INLINE static uint8_t getApb1Pre()
+    static uint8_t getApb1Pre()
     {
         return ApbPrescalerToValue[tl::getRegField(rg()->CFGR,
                              CFGR::PPRE1)];
@@ -623,7 +623,7 @@ struct Rcc {
     /// \brief Получение коэффициента деления для APB2
     /// \return
     ///
-    INLINE static uint8_t getApb2Pre()
+    static uint8_t getApb2Pre()
     {
         return ApbPrescalerToValue[tl::getRegField(rg()->CFGR,
                              CFGR::PPRE2)];
@@ -638,7 +638,7 @@ struct Rcc {
     /// \param en требуемое состояние
     /// \return true если удачно
     ///
-    INLINE static bool pllSaiEnable(bool en)
+    static bool pllSaiEnable(bool en)
     {
         uint16_t timeout = timeoutValue;
 
@@ -694,203 +694,204 @@ struct Rcc {
     /// \brief Получение ссылки на переменную, хранящую тактовую частоту системы
     /// \return ссылка на переменную, хранящую тактовую частоту системы
     ///
-    INLINE static uint32_t& systemCoreClock()
+    static uint32_t& systemCoreClock()
     {
         static uint32_t sysCoreClock;
 
         return sysCoreClock;
     }
 
-    INLINE static void setLtdcClkDiv(Rcc::PllSaiDivr div)
+    static void setLtdcClkDiv(Rcc::PllSaiDivr div)
     {
         tl::setRegister(rg()->DCKCFGR, DCKCFGR::PLLSAIDIVR, static_cast<uint16_t>(div));
     }
 
-    INLINE static void rtcEnable(bool en)
+    static void rtcEnable(bool en)
     {
         tl::setRegister(rg()->BDCR, BDCR::RTCEN, en);
     }
 
-    INLINE static bool isRtcEnable()
+    static bool isRtcEnable()
     {
         return (tl::getRegField(rg()->BDCR, BDCR::RTCEN));
     }
 
-    INLINE static void setRtcHseDiv(uint8_t div)
+    static void setRtcHseDiv(uint8_t div)
     {
         tl::setRegister(rg()->CFGR, CFGR::RTCPRE, div);
     }
 
-    INLINE static void setRtcClkSrc(RtcClkSrc src)
+    static void setRtcClkSrc(RtcClkSrc src)
     {
         tl::setRegister(rg()->BDCR, BDCR::RTCSEL, static_cast<uint16_t>(src));
     }
 
 
-    INLINE static void lseEnable(bool en)
+    static void lseEnable(bool en)
     {
         tl::setRegister(rg()->BDCR, BDCR::LSEON, en);
     }
 
-    INLINE static bool lseReady()
+    static bool lseReady()
     {
         return (tl::getRegField(rg()->BDCR, BDCR::LSERDY));
     }
 
-    INLINE static void lsiEnable(bool en)
+    static void lsiEnable(bool en)
     {
         tl::setRegister(rg()->CSR, CSR::LSION, en);
     }
 
-    INLINE static bool lsiReady()
+    static bool lsiReady()
     {
         return (tl::getRegField(rg()->CSR, CSR::LSIRDY));
     }
 
-    INLINE static void rtcReset(bool en)
+    static void rtcReset(bool en)
     {
         tl::setRegister(rg()->BDCR, BDCR::BDRST, en);
     }
 
-    INLINE static void setMco1(Rcc::Mco1Src src, Rcc::McoPrescaler psc)
+    static void setMco1(Rcc::Mco1Src src, Rcc::McoPrescaler psc)
     {
         tl::setRegister(rg()->CFGR,
                              CFGR::MCO1, static_cast<uint8_t>(src),
                              CFGR::MCO1PRE, static_cast<uint8_t>(psc));
     }
 
-    INLINE static void setMco2(Rcc::Mco2Src src, Rcc::McoPrescaler psc)
+    static void setMco2(Rcc::Mco2Src src, Rcc::McoPrescaler psc)
     {
         tl::setRegister(rg()->CFGR,
                              CFGR::MCO2, static_cast<uint8_t>(src),
                              CFGR::MCO2PRE, static_cast<uint8_t>(psc));
     }
 
-    // Clock enable functions    INLINE static void clockOtghsulpi(bool en) { Utility::setRegister(rg()->AHB1ENR, AHB1ENR::OTGHSULPIEN, en); }
-	INLINE static void clockOtgHsUlpi(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::OTGHSULPIEN, en); }
-	INLINE static void clockOtgHs(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::OTGHSEN, en); }
-	INLINE static void clockEthmacptp(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACPTPEN, en); }
-    INLINE static void clockEthmacrx(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACRXEN, en); }
-    INLINE static void clockEthmactx(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACTXEN, en); }
-    INLINE static void clockEthmac(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACEN, en); }
-    INLINE static void clockDma2d(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::DMA2DEN, en); }
-    INLINE static void clockDma2(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::DMA2EN, en); }
-    INLINE static void clockDma1(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::DMA1EN, en); }
-    INLINE static void clockCcmdataram(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::CCMDATARAMEN, en); }
-    INLINE static void clockBkpsram(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::BKPSRAMEN, en); }
-    INLINE static void clockCrc(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::CRCEN, en); }
-    INLINE static void clockGpioI(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOIEN, en); }
-    INLINE static void clockGpioH(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOHEN, en); }
-    INLINE static void clockGpioG(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOGEN, en); }
-    INLINE static void clockGpioF(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOFEN, en); }
-    INLINE static void clockGpioE(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOEEN, en); }
-    INLINE static void clockGpioD(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIODEN, en); }
-    INLINE static void clockGpioC(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOCEN, en); }
-    INLINE static void clockGpioB(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOBEN, en); }
-    INLINE static void clockGpioA(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOAEN, en); }
-	INLINE static void clockOtgFs(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::OTGFSEN, en); }
-    INLINE static void clockRng(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::RNGEN, en); }
-    INLINE static void clockHash(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::HASHEN, en); }
-    INLINE static void clockCryp(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::CRYPEN, en); }
-    INLINE static void clockDcmi(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::DCMIEN, en); }
-    INLINE static void clockFmc(bool en) { tl::setRegister(rg()->AHB3ENR, AHB3ENR::FMCEN, en); }
-    INLINE static void clockTim2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM2EN, en); }
-    INLINE static void clockTim3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM3EN, en); }
-    INLINE static void clockTim4(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM4EN, en); }
-    INLINE static void clockTim5(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM5EN, en); }
-    INLINE static void clockTim6(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM6EN, en); }
-    INLINE static void clockTim7(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM7EN, en); }
-    INLINE static void clockTim12(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM12EN, en); }
-    INLINE static void clockTim13(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM13EN, en); }
-    INLINE static void clockTim14(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM14EN, en); }
-    INLINE static void clockWwdg(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::WWDGEN, en); }
-    INLINE static void clockSpi2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::SPI2EN, en); }
-    INLINE static void clockSpi3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::SPI3EN, en); }
-    INLINE static void clockUsart2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::USART2EN, en); }
-    INLINE static void clockUsart3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::USART3EN, en); }
-    INLINE static void clockUart4(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART4EN, en); }
-    INLINE static void clockUart5(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART5EN, en); }
-    INLINE static void clockI2c1(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::I2C1EN, en); }
-    INLINE static void clockI2c2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::I2C2EN, en); }
-    INLINE static void clockI2c3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::I2C3EN, en); }
-    INLINE static void clockCan1(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::CAN1EN, en); }
-    INLINE static void clockCan2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::CAN2EN, en); }
-    INLINE static void clockPwr(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::PWREN, en); }
-    INLINE static void clockDac(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::DACEN, en); }
-    INLINE static void clockTim1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM1EN, en); }
-    INLINE static void clockTim8(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM8EN, en); }
-    INLINE static void clockUsart1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::USART1EN, en); }
-	INLINE static void clockUsart6(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::USART6EN, en); }
-	INLINE static void clockUsart7(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART7EN, en); }
-	INLINE static void clockUsart8(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART8EN, en); }
-	INLINE static void clockAdc1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::ADC1EN, en); }
-    INLINE static void clockAdc2(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::ADC2EN, en); }
-    INLINE static void clockAdc3(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::ADC3EN, en); }
-    INLINE static void clockSdio(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SDIOEN, en); }
-    INLINE static void clockSpi1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI1EN, en); }
-    INLINE static void clockSpi4(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI4EN, en); }
-    INLINE static void clockSyscfg(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SYSCFGEN, en); }
-    INLINE static void clockTim9(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM9EN, en); }
-    INLINE static void clockTim10(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM10EN, en); }
-    INLINE static void clockTim11(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM11EN, en); }
-    INLINE static void clockSpi5(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI5EN, en); }
-    INLINE static void clockSpi6(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI6EN, en); }
-    INLINE static void clockLtdc(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::LTDCEN, en); }
+    // Clock enable functions    static void clockOtghsulpi(bool en) { Utility::setRegister(rg()->AHB1ENR, AHB1ENR::OTGHSULPIEN, en); }
+	static void clockOtgHsUlpi(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::OTGHSULPIEN, en); }
+	static void clockOtgHs(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::OTGHSEN, en); }
+	static void clockEthmacptp(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACPTPEN, en); }
+    static void clockEthmacrx(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACRXEN, en); }
+    static void clockEthmactx(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACTXEN, en); }
+    static void clockEthmac(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::ETHMACEN, en); }
+    static void clockDma2d(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::DMA2DEN, en); }
+    static void clockDma2(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::DMA2EN, en); }
+    static void clockDma1(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::DMA1EN, en); }
+    static void clockCcmdataram(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::CCMDATARAMEN, en); }
+    static void clockBkpsram(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::BKPSRAMEN, en); }
+    static void clockCrc(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::CRCEN, en); }
+    static void clockGpioI(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOIEN, en); }
+    static void clockGpioH(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOHEN, en); }
+    static void clockGpioG(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOGEN, en); }
+    static void clockGpioF(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOFEN, en); }
+    static void clockGpioE(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOEEN, en); }
+    static void clockGpioD(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIODEN, en); }
+    static void clockGpioC(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOCEN, en); }
+    static void clockGpioB(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOBEN, en); }
+    static void clockGpioA(bool en) { tl::setRegister(rg()->AHB1ENR, AHB1ENR::GPIOAEN, en); }
+	static void clockOtgFs(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::OTGFSEN, en); }
+    static void clockRng(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::RNGEN, en); }
+    static void clockHash(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::HASHEN, en); }
+    static void clockCryp(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::CRYPEN, en); }
+    static void clockDcmi(bool en) { tl::setRegister(rg()->AHB2ENR, AHB2ENR::DCMIEN, en); }
+    static void clockFmc(bool en) { tl::setRegister(rg()->AHB3ENR, AHB3ENR::FMCEN, en); }
+    static void clockTim2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM2EN, en); }
+    static void clockTim3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM3EN, en); }
+    static void clockTim4(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM4EN, en); }
+    static void clockTim5(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM5EN, en); }
+    static void clockTim6(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM6EN, en); }
+    static void clockTim7(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM7EN, en); }
+    static void clockTim12(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM12EN, en); }
+    static void clockTim13(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM13EN, en); }
+    static void clockTim14(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::TIM14EN, en); }
+    static void clockWwdg(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::WWDGEN, en); }
+    static void clockSpi2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::SPI2EN, en); }
+    static void clockSpi3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::SPI3EN, en); }
+    static void clockUsart2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::USART2EN, en); }
+    static void clockUsart3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::USART3EN, en); }
+    static void clockUart4(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART4EN, en); }
+    static void clockUart5(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART5EN, en); }
+    static void clockI2c1(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::I2C1EN, en); }
+    static void clockI2c2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::I2C2EN, en); }
+    static void clockI2c3(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::I2C3EN, en); }
+    static void clockCan1(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::CAN1EN, en); }
+    static void clockCan2(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::CAN2EN, en); }
+    static void clockPwr(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::PWREN, en); }
+    static void clockDac(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::DACEN, en); }
+    static void clockTim1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM1EN, en); }
+    static void clockTim8(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM8EN, en); }
+    static void clockUsart1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::USART1EN, en); }
+	static void clockUsart6(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::USART6EN, en); }
+	static void clockUsart7(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART7EN, en); }
+	static void clockUsart8(bool en) { tl::setRegister(rg()->APB1ENR, APB1ENR::UART8EN, en); }
+	static void clockAdc1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::ADC1EN, en); }
+    static void clockAdc2(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::ADC2EN, en); }
+    static void clockAdc3(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::ADC3EN, en); }
+    static void clockSdio(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SDIOEN, en); }
+    static void clockSpi1(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI1EN, en); }
+    static void clockSpi4(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI4EN, en); }
+    static void clockSyscfg(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SYSCFGEN, en); }
+    static void clockTim9(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM9EN, en); }
+    static void clockTim10(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM10EN, en); }
+    static void clockTim11(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::TIM11EN, en); }
+    static void clockSpi5(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI5EN, en); }
+    static void clockSpi6(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::SPI6EN, en); }
+    static void clockLtdc(bool en) { tl::setRegister(rg()->APB2ENR, APB2ENR::LTDCEN, en); }
 
-    // Reset functions    INLINE static void resetOtghs(bool en) { Utility::setRegister(rg()->AHB1RSTR, AHB1RSTR::OTGHSRST, en); }
-    INLINE static void resetEthmac(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::ETHMACRST, en); }
-    INLINE static void resetDma2(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::DMA2RST, en); }
-    INLINE static void resetDma1(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::DMA1RST, en); }
-    INLINE static void resetCrc(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::CRCRST, en); }
-    INLINE static void resetGpioi(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOIRST, en); }
-    INLINE static void resetGpioh(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOHRST, en); }
-    INLINE static void resetGpiog(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOGRST, en); }
-    INLINE static void resetGpiof(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOFRST, en); }
-    INLINE static void resetGpioe(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOERST, en); }
-    INLINE static void resetGpiod(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIODRST, en); }
-    INLINE static void resetGpioc(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOCRST, en); }
-    INLINE static void resetGpiob(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOBRST, en); }
-    INLINE static void resetGpioa(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOARST, en); }
-    INLINE static void resetOtgfs(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::OTGFSRST, en); }
-    INLINE static void resetRng(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::RNGRST, en); }
-    INLINE static void resetHsah(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::HSAHRST, en); }
-    INLINE static void resetCryp(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::CRYPRST, en); }
-    INLINE static void resetDcmi(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::DCMIRST, en); }
-    INLINE static void resetFmc(bool en) { tl::setRegister(rg()->AHB3RSTR, AHB3RSTR::FMCRST, en); }
-    INLINE static void resetTim2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM2RST, en); }
-    INLINE static void resetTim3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM3RST, en); }
-    INLINE static void resetTim4(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM4RST, en); }
-    INLINE static void resetTim5(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM5RST, en); }
-    INLINE static void resetTim6(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM6RST, en); }
-    INLINE static void resetTim7(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM7RST, en); }
-    INLINE static void resetTim12(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM12RST, en); }
-    INLINE static void resetTim13(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM13RST, en); }
-    INLINE static void resetTim14(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM14RST, en); }
-    INLINE static void resetWwdg(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::WWDGRST, en); }
-    INLINE static void resetSpi2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::SPI2RST, en); }
-    INLINE static void resetSpi3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::SPI3RST, en); }
-    INLINE static void resetUart2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART2RST, en); }
-    INLINE static void resetUart3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART3RST, en); }
-    INLINE static void resetUart4(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART4RST, en); }
-    INLINE static void resetUart5(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART5RST, en); }
-    INLINE static void resetI2c1(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::I2C1RST, en); }
-    INLINE static void resetI2c2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::I2C2RST, en); }
-    INLINE static void resetI2c3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::I2C3RST, en); }
-    INLINE static void resetCan1(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::CAN1RST, en); }
-    INLINE static void resetCan2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::CAN2RST, en); }
-    INLINE static void resetPwr(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::PWRRST, en); }
-    INLINE static void resetDac(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::DACRST, en); }
-    INLINE static void resetTim1(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM1RST, en); }
-    INLINE static void resetTim8(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM8RST, en); }
-    INLINE static void resetUsart1(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::USART1RST, en); }
-    INLINE static void resetUsart6(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::USART6RST, en); }
-    INLINE static void resetAdc(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::ADCRST, en); }
-    INLINE static void resetSdio(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::SDIORST, en); }
-    INLINE static void resetSpi1(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::SPI1RST, en); }
-    INLINE static void resetSyscfg(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::SYSCFGRST, en); }
-    INLINE static void resetTim9(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM9RST, en); }
-    INLINE static void resetTim10(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM10RST, en); }
-    INLINE static void resetTim11(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM11RST, en); }
+    // Reset functions
+    static void resetOtgHs(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::OTGHSRST, en); }
+    static void resetEthmac(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::ETHMACRST, en); }
+    static void resetDma2(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::DMA2RST, en); }
+    static void resetDma1(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::DMA1RST, en); }
+    static void resetCrc(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::CRCRST, en); }
+    static void resetGpioi(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOIRST, en); }
+    static void resetGpioh(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOHRST, en); }
+    static void resetGpiog(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOGRST, en); }
+    static void resetGpiof(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOFRST, en); }
+    static void resetGpioe(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOERST, en); }
+    static void resetGpiod(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIODRST, en); }
+    static void resetGpioc(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOCRST, en); }
+    static void resetGpiob(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOBRST, en); }
+    static void resetGpioa(bool en) { tl::setRegister(rg()->AHB1RSTR, AHB1RSTR::GPIOARST, en); }
+    static void resetOtgFs(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::OTGFSRST, en); }
+    static void resetRng(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::RNGRST, en); }
+    static void resetHsah(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::HSAHRST, en); }
+    static void resetCryp(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::CRYPRST, en); }
+    static void resetDcmi(bool en) { tl::setRegister(rg()->AHB2RSTR, AHB2RSTR::DCMIRST, en); }
+    static void resetFmc(bool en) { tl::setRegister(rg()->AHB3RSTR, AHB3RSTR::FMCRST, en); }
+    static void resetTim2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM2RST, en); }
+    static void resetTim3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM3RST, en); }
+    static void resetTim4(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM4RST, en); }
+    static void resetTim5(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM5RST, en); }
+    static void resetTim6(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM6RST, en); }
+    static void resetTim7(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM7RST, en); }
+    static void resetTim12(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM12RST, en); }
+    static void resetTim13(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM13RST, en); }
+    static void resetTim14(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::TIM14RST, en); }
+    static void resetWwdg(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::WWDGRST, en); }
+    static void resetSpi2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::SPI2RST, en); }
+    static void resetSpi3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::SPI3RST, en); }
+    static void resetUart2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART2RST, en); }
+    static void resetUart3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART3RST, en); }
+    static void resetUart4(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART4RST, en); }
+    static void resetUart5(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::UART5RST, en); }
+    static void resetI2c1(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::I2C1RST, en); }
+    static void resetI2c2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::I2C2RST, en); }
+    static void resetI2c3(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::I2C3RST, en); }
+    static void resetCan1(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::CAN1RST, en); }
+    static void resetCan2(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::CAN2RST, en); }
+    static void resetPwr(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::PWRRST, en); }
+    static void resetDac(bool en) { tl::setRegister(rg()->APB1RSTR, APB1RSTR::DACRST, en); }
+    static void resetTim1(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM1RST, en); }
+    static void resetTim8(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM8RST, en); }
+    static void resetUsart1(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::USART1RST, en); }
+    static void resetUsart6(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::USART6RST, en); }
+    static void resetAdc(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::ADCRST, en); }
+    static void resetSdio(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::SDIORST, en); }
+    static void resetSpi1(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::SPI1RST, en); }
+    static void resetSyscfg(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::SYSCFGRST, en); }
+    static void resetTim9(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM9RST, en); }
+    static void resetTim10(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM10RST, en); }
+    static void resetTim11(bool en) { tl::setRegister(rg()->APB2RSTR, APB2RSTR::TIM11RST, en); }
 
 
 };

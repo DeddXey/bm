@@ -1,12 +1,7 @@
 #ifndef FLASH_H
 #define FLASH_H
 
-
 #include <stdint.h>
-
-#ifndef INLINE
-#define INLINE __attribute__((__always_inline__)) inline
-#endif
 
 struct Flash {
 
@@ -89,9 +84,9 @@ struct Flash {
 #endif
 //    constexpr static volatile Regs* const flash = /*static_cast<Regs*>*/(Regs*)(BASE);
 
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
-        return reinterpret_cast<Regs*volatile>(BASE);
+        return reinterpret_cast<Regs*>(BASE);
     }
 
 
@@ -100,7 +95,7 @@ struct Flash {
     /// \brief Установка времени запаздывания
     /// \param latency
     ///
-    INLINE static void setLatency(uint8_t latency)
+    static void setLatency(uint8_t latency)
     {
         //flash->ACR.LATENCY = latency;
         rg()->ACR.LATENCY = latency;

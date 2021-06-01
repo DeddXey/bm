@@ -242,7 +242,7 @@ void Sai1                (void);
 void Ltdc                (void);
 void LtdcEr              (void);
 void Dma2D               (void);
-};
+}
 
 }
 

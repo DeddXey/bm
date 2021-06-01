@@ -10,13 +10,11 @@
 #include "it.h"
 
 
-__attribute__((noreturn)) void Isr::DefaultHandler()
+void Isr::DefaultHandler()
 {
-
     for(;;) {
 
     }
-    ;
 }
 
 extern "C" const uint32_t _estack;

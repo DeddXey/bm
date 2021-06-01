@@ -13,24 +13,24 @@ template<> struct usart_t<1>
 {
     constexpr static uint32_t base = 0x40011000;
 	constexpr static uint32_t interrupt = Nvic::itUsart1;
-    static void INLINE clockEnable(bool en) { Rcc::clockUsart1(en); }
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb2Pre(); }
+    static void clockEnable(bool en) { Rcc::clockUsart1(en); }
+    static uint8_t getPrescaler() { return Rcc::getApb2Pre(); }
 };
 
 template<> struct usart_t<2>
 {
     constexpr static uint32_t base = 0x40004400;
 	constexpr static uint32_t interrupt = Nvic::itUsart2;
-    static void INLINE clockEnable(bool en) { Rcc::clockUsart2(en); }
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+    static void clockEnable(bool en) { Rcc::clockUsart2(en); }
+    static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 template<> struct usart_t<3>
 {
     constexpr static uint32_t base = 0x40004800;
 	constexpr static uint32_t interrupt = Nvic::itUsart3;
-    static void INLINE clockEnable(bool en) { Rcc::clockUsart3(en); }
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+    static void clockEnable(bool en) { Rcc::clockUsart3(en); }
+    static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 // TODO uart
@@ -38,8 +38,8 @@ template<> struct usart_t<4>
 {
     constexpr static uint32_t base = 0x40004C00;
 	constexpr static uint32_t interrupt = Nvic::itUart4;
-    static void INLINE clockEnable(bool en) { Rcc::clockUart4(en); }
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+    static void clockEnable(bool en) { Rcc::clockUart4(en); }
+    static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 // TODO uart
@@ -47,30 +47,30 @@ template<> struct usart_t<5>
 {
     constexpr static uint32_t base = 0x40005000;
 	constexpr static uint32_t interrupt = Nvic::itUart5;
-    static void INLINE clockEnable(bool en) { Rcc::clockUart5(en); }
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+    static void clockEnable(bool en) { Rcc::clockUart5(en); }
+    static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 template<> struct usart_t<6>
 {
     constexpr static uint32_t base = 0x40011400;
 	constexpr static uint32_t interrupt = Nvic::itUsart6;
-    static void INLINE clockEnable(bool en) { Rcc::clockUsart6(en); }
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb2Pre(); }
+    static void clockEnable(bool en) { Rcc::clockUsart6(en); }
+    static uint8_t getPrescaler() { return Rcc::getApb2Pre(); }
 };
 template<> struct usart_t<7>
 {
 	constexpr static uint32_t base = 0x40007800;
 	constexpr static uint32_t interrupt = Nvic::itUart7;
-	static void INLINE clockEnable(bool en) { Rcc::clockUsart7(en); }
-	static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+	static void clockEnable(bool en) { Rcc::clockUsart7(en); }
+	static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 template<> struct usart_t<8>
 {
 	constexpr static uint32_t base = 0x40007C00;
 	constexpr static uint32_t interrupt = Nvic::itUart8;
-	static void INLINE clockEnable(bool en) { Rcc::clockUsart8(en); }
-	static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+	static void clockEnable(bool en) { Rcc::clockUsart8(en); }
+	static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 
@@ -184,7 +184,7 @@ struct Usart
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
         return reinterpret_cast<volatile Regs* volatile>(usart_t<usartNumber>::base);
     }
@@ -193,7 +193,7 @@ struct Usart
     ///
     /// \brief Включение тактирования
     ///
-    INLINE static void clockEnable(bool en)
+    static void clockEnable(bool en)
     {
         usart_t<usartNumber>::clockEnable(en);
     }
@@ -202,7 +202,7 @@ struct Usart
     /// \brief Set baud rate
     /// \param baud rate
     ///
-    INLINE static void setBaudRate(uint32_t value)
+    static void setBaudRate(uint32_t value)
     {
         uint32_t temp = Rcc::systemCoreClock() /
                         usart_t<usartNumber>::getPrescaler()
@@ -215,97 +215,97 @@ struct Usart
     /// \brief Enable USART
     /// \param enable
     ///
-    INLINE static void enable(bool en)
+    static void enable(bool en)
     {
-        ::setRegister(rg()->CR1, CR1::UE, en);
+        tl::setRegister(rg()->CR1, CR1::UE, en);
     }
 
 	//------------------------------------------------------------------------
     /// \brief Enable TX
     /// \param enable
-    INLINE static void txEnable(bool en)
+    static void txEnable(bool en)
     {
-        ::setRegister(rg()->CR1, CR1::TE, en);
+        tl::setRegister(rg()->CR1, CR1::TE, en);
     }
 
 	//------------------------------------------------------------------------
     /// \brief Enable RX
     /// \param enable
-    INLINE static void rxEnable(bool en)
+    static void rxEnable(bool en)
     {
-        ::setRegister(rg()->CR1, CR1::RE, en);
+        tl::setRegister(rg()->CR1, CR1::RE, en);
     }
 
 	//------------------------------------------------------------------------
-	INLINE static void defaultEnable(bool en)
+	static void defaultEnable(bool en)
     {
-        ::setRegister(rg()->CR1,
+        tl::setRegister(rg()->CR1,
                              CR1::RE, en,
                              CR1::TE, en,
                              CR1::UE, en);
     }
 
 	//------------------------------------------------------------------------
-	INLINE static void setIdleIt(const bool en)
+	static void setIdleIt(const bool en)
 	{
-		::setRegister(rg()->CR1,
+        tl::setRegister(rg()->CR1,
 		                     CR1::IDLEIE, en);
 	}
 
 	//------------------------------------------------------------------------
-	INLINE static void setRxNotEmptyIt(const bool en)
+	static void setRxNotEmptyIt(const bool en)
 	{
-		::setRegister(rg()->CR1,
+        tl::setRegister(rg()->CR1,
 		                     CR1::RXNEIE, en);
 	}
 
 	//------------------------------------------------------------------------
-	INLINE static void setTransferCompleteIt(const bool en)
+	static void setTransferCompleteIt(const bool en)
 	{
-		::setRegister(rg()->CR1,
+        tl::setRegister(rg()->CR1,
 		                     CR1::TCIE, en);
 	}
 
 	//------------------------------------------------------------------------
-	INLINE static void setTxEmptyIt(const bool en)
+	static void setTxEmptyIt(const bool en)
 	{
-		::setRegister(rg()->CR1,
+        tl::setRegister(rg()->CR1,
 		                     CR1::TCIE, en);
 	}
 
     //------------------------------------------------------------------------
-	INLINE static void putChar(const unsigned char ch)
+	static void putChar(const unsigned char ch)
     {
-        while (!(::getRegField(rg()->SR, SR::TXE))) {__NOP();}
+        while (!(tl::getRegField(rg()->SR, SR::TXE))) {__NOP();}
         rg()->DR = ch;
     }
 
 	//------------------------------------------------------------------------
-	INLINE static void putDr(const unsigned char ch)
+	static void putDr(const unsigned char ch)
 	{
 		rg()->DR = ch;
 	}
 	//------------------------------------------------------------------------
-	INLINE static uint8_t getDr()
+	static uint8_t getDr()
 	{
 		return rg()->DR;
 	}
 	//------------------------------------------------------------------------
-	INLINE static bool isTxEmpty()
+	static bool isTxEmpty()
 	{
-		return ::getRegField(rg()->SR, SR::TXE);
+		return tl::getRegField(rg()->SR, SR::TXE);
 	}
 
 	//------------------------------------------------------------------------
-	INLINE static bool isRxNotEmpty()
+	static bool isRxNotEmpty()
 	{
-		return ::getRegField(rg()->SR, SR::RXNE);
+		return tl::getRegField(rg()->SR, SR::RXNE);
 	}
 
 	//------------------------------------------------------------------------
-	INLINE static bool isOverrun()
+	static bool isOverrun()
 	{
-		return ::getRegField(rg()->SR, SR::ORE);
+		return tl::getRegField(rg()->SR, SR::ORE);
 	}
 
 };
