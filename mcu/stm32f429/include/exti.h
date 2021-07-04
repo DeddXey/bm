@@ -25,7 +25,7 @@ StrobeExti::enable();
 #include "rcc.h"
 #include "syscfg.h"
 #include "nvic.h"
-#include "bits.h"
+#include "utility.h"
 
 ///
 /// Definition of the interrupt number for current pin

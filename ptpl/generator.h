@@ -2,7 +2,7 @@
 #define GENERATOR_H
 
 #include "dac.h"
-#include "dbg.h_"
+#include "log/log.h"
 #include "dma.h"
 #include "table.h"
 #include "tim.h"

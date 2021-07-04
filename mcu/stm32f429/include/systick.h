@@ -50,13 +50,13 @@ struct SysTickTimer {
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
-        return reinterpret_cast<Regs * volatile>(BASE);
+        return reinterpret_cast<Regs * >(BASE);
     }
 
 
-    INLINE static void set(uint32_t ticks)
+    static void set(uint32_t ticks)
     {
         rg()->LOAD.RELOAD = ticks - 1;
         Nvic::setPriority(Nvic::itSysTick, (1 << 4) - 1);

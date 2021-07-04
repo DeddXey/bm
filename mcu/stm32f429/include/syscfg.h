@@ -48,21 +48,22 @@ struct Syscfg {
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
-        return reinterpret_cast<Regs * volatile>(BASE);
+//        return reinterpret_cast<Regs * volatile>(BASE);
+        return reinterpret_cast<Regs *>(BASE);
     }
 
     ///---------------------------------------------------------------------
     ///
     /// \brief Включение тактирования
     ///
-    INLINE static void clockEnable(const bool en)
+    static void clockEnable(const bool en)
     {
         Rcc::clockSyscfg(en);
     }
 
-    INLINE static void assignExtiLine(const uint8_t port, const uint8_t pin)
+    static void assignExtiLine(const uint8_t port, const uint8_t pin)
     {
         uint8_t value = port - 'A';
         uint8_t index = (pin >> 2) & 0x3;

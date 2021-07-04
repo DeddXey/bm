@@ -143,7 +143,7 @@ struct Dac {
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
         return reinterpret_cast<volatile Regs*>(base);
     }
@@ -151,63 +151,63 @@ struct Dac {
     static void INLINE clockEnable(const bool en) { Rcc::clockDac(en); }
 
 
-    INLINE static void ch1Enable(const bool en)
+    static void ch1Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+        tl::setRegister(rg()->CR,
                              CR::EN1, en);
     }
 
-    INLINE static void ch2Enable(const bool en)
+    static void ch2Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::EN2, en);
     }
 
-    INLINE static void buff1Enable(const bool en)
+    static void buff1Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::BOFF1, !en);
     }
 
-    INLINE static void buff2Enable(const bool en)
+    static void buff2Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::BOFF2, !en);
     }
 
-    INLINE static void trigger1Enable(const bool en)
+    static void trigger1Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::TEN1, en);
     }
 
-    INLINE static void trigger2Enable(const bool en)
+    static void trigger2Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::TEN2, en);
     }
 
-    INLINE static void trigger1Select(const DacTrigger trigger)
+    static void trigger1Select(const DacTrigger trigger)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::TSEL1, static_cast<uint8_t>(trigger));
     }
 
-    INLINE static void trigger2Select(const DacTrigger trigger)
+    static void trigger2Select(const DacTrigger trigger)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::TSEL2, static_cast<uint8_t>(trigger));
     }
 
-    INLINE static void dma1Enable(const bool en)
+    static void dma1Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::DMAEN1, en);
     }
 
-    INLINE static void dma2Enable(const bool en)
+    static void dma2Enable(const bool en)
     {
-        ::setRegister(rg()->CR,
+      tl::setRegister(rg()->CR,
                              CR::DMAEN2, en);
     }
 

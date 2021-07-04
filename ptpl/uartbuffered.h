@@ -10,8 +10,8 @@ template <typename Port,
           int sizeRx = 255>
 class UartBuffered {
 
-    Fifo<uint8_t, sizeTx> txBuffer;
-    Fifo<uint8_t, sizeRx> rxBuffer;
+    tl::Fifo<uint8_t, sizeTx> txBuffer;
+    tl::Fifo<uint8_t, sizeRx> rxBuffer;
     bool txIdle = true; ///< Флаг опустошения очереди.
     bool rxIdle = false; ///< Флаг опустошения очереди.
     bool ovr = false;
@@ -21,7 +21,7 @@ public:
     using UPort = Port;
 
     //------------------------------------------------------------------------
-    Fifo<uint8_t, sizeRx>& getRxFifo()
+    tl::Fifo<uint8_t, sizeRx>& getRxFifo()
     {
         return rxBuffer;
     }
@@ -57,7 +57,7 @@ public:
     }
 
     //------------------------------------------------------------------------
-    Fifo<uint8_t, sizeTx>& getTxFifo()
+    tl::Fifo<uint8_t, sizeTx>& getTxFifo()
     {
         return txBuffer;
     }

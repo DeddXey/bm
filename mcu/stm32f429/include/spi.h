@@ -1,67 +1,68 @@
 #ifndef SPI_H
 #define SPI_H
-#include "dbg.h_"
+#include "log/log.h"
 #include "nvic.h"
 #include "rcc.h"
-#include <cmath>
-#include <stdint.h>
-#include <stdio.h>
+#include "gcem.hpp"
+#include <cstdint>
+#include <optional>
 
 template<int num> struct spi_t;
 
 template<> struct spi_t<1>
 {
     constexpr static uint32_t SPI_BASE = 0x40013000;
-    static void INLINE clockEnable(const bool en) { Rcc::clockSpi1(en);}
+    static void clockEnable(const bool en) { Rcc::clockSpi1(en);}
     constexpr static uint32_t SPI_IRQn                = Nvic::itSpi1;     ///< I2C1 event global interrupt
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb2Pre(); }
+    static uint8_t getPrescaler() { return Rcc::getApb2Pre(); }
 
 };
 
 template<> struct spi_t<2>
 {
     constexpr static uint32_t SPI_BASE = 0x40003800;
-    static void INLINE clockEnable(const bool en) { Rcc::clockSpi2(en); }
+    static void clockEnable(const bool en) { Rcc::clockSpi2(en); }
     constexpr static uint32_t SPI_IRQn                = Nvic::itSpi2;     ///< I2C1 event global interrupt
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+    static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 template<> struct spi_t<3>
 {
     constexpr static uint32_t SPI_BASE = 0x40003C00;
-    static void INLINE clockEnable(const bool en) { Rcc::clockSpi3(en); }
+    static void clockEnable(const bool en) { Rcc::clockSpi3(en); }
     constexpr static uint32_t SPI_IRQn                = Nvic::itSpi3;     ///< I2C1 event global interrupt
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb1Pre(); }
+    static uint8_t getPrescaler() { return Rcc::getApb1Pre(); }
 };
 
 template<> struct spi_t<4>
 {
     constexpr static uint32_t SPI_BASE = 0x40013400;
-    static void INLINE clockEnable(const bool en) { Rcc::clockSpi4(en); }
+    static void clockEnable(const bool en) { Rcc::clockSpi4(en); }
     constexpr static uint32_t SPI_IRQn                = Nvic::itSpi4;     ///< I2C1 event global interrupt
-    static uint8_t INLINE getPrescaler() { return Rcc::getApb2Pre(); }
+    static uint8_t getPrescaler() { return Rcc::getApb2Pre(); }
 };
 
 template<> struct spi_t<5>
 {
     constexpr static uint32_t SPI_BASE = 0x40015000;
-    static void INLINE clockEnable(const bool en) { Rcc::clockSpi5(en); }
+    static void clockEnable(const bool en) { Rcc::clockSpi5(en); }
     constexpr static uint32_t SPI_IRQn                = Nvic::itSpi5;     ///< I2C1 event global interrupt
-    static uint8_t INLINE getPrescaler() { return 0; }
+    static uint8_t getPrescaler() { return 0; }
 };
 
 template<> struct spi_t<6>
 {
     constexpr static uint32_t SPI_BASE = 0x40015400;
-    static void INLINE clockEnable(const bool en) { Rcc::clockSpi6(en); }
+    static void clockEnable(const bool en) { Rcc::clockSpi6(en); }
     constexpr static uint32_t SPI_IRQn                = Nvic::itSpi6;     ///< I2C1 event global interrupt
-    static uint8_t INLINE getPrescaler() { return 0; } //
+    static uint8_t getPrescaler() { return 0; } //
 };
 
 
 template<int num>
 struct Spi {
 
+  constexpr static uint32_t maxCnt = 10165536;
 
     struct CR1_t {
         uint32_t  CPHA:1;
@@ -162,7 +163,7 @@ struct Spi {
     ///
     /// \brief Включение тактирования
     ///
-    INLINE static void clockEnable(const bool en)
+    static void clockEnable(const bool en)
     {
         spi_t<num>::clockEnable(en);
     }
@@ -173,7 +174,7 @@ struct Spi {
     /// \brief Получение указателя на регистры
     /// \return указатель на регистры
     ///
-    INLINE static volatile Regs* rg()
+    static volatile Regs* rg()
     {
         return reinterpret_cast<volatile Regs* volatile>(spi_t<num>::SPI_BASE);
     }
@@ -201,11 +202,11 @@ struct Spi {
 
 
 
-    INLINE static uint8_t getIrqN() { return spi_t<num>::SPI_IRQn; }
-//    INLINE static void setBaudRate(Spi<num>::BaudRate br) { rg()->CR1.BR = br; }
-    INLINE static void setBaudRate(uint32_t br)
+    static uint8_t getIrqN() { return spi_t<num>::SPI_IRQn; }
+
+    static void setBaudRate([[maybe_unused]] uint32_t br)
     {
-        auto b = log2f(Rcc::systemCoreClock() / spi_t<num>::getPrescaler());
+        auto b = gcem::log2(Rcc::systemCoreClock() / spi_t<num>::getPrescaler());
         uint8_t d = b - 1;
 
 
@@ -213,24 +214,69 @@ struct Spi {
     }
 
 
-    INLINE static void enable() { rg()->CR1.SPE = 1; }
-    INLINE static void disable() { rg()->CR1.SPE = 0; }
-    INLINE static volatile uint16_t* getDrAddress() {return  reinterpret_cast<volatile uint16_t*>(&(rg()->DR)); }
+    static void enable() { rg()->CR1.SPE = 1; }
+    static void disable() { rg()->CR1.SPE = 0; }
+    static volatile uint16_t* getDrAddress() {return  reinterpret_cast<volatile uint16_t*>(&(rg()->DR)); }
 
-    INLINE static void rxneIntEnable(bool en) { rg()->CR2.RXNEIE = en; }
-    INLINE static void txeIntEnable(bool en) { rg()->CR2.TXEIE = en; }
+    static void rxNeIntEnable(bool en) { rg()->CR2.RXNEIE = en; }
+    static void txeIntEnable(bool en) { rg()->CR2.TXEIE = en; }
 
-    INLINE static void rxDmaEnable(bool en) { rg()->CR2.RXDMAEN = en; }
-    INLINE static void txDmaEnable(bool en) { rg()->CR2.TXDMAEN = en; }
-    INLINE static void setBiDirectionalMode(bool en) { rg()->CR1.BIDIMODE = en; }
-    INLINE static void setRxOnly(bool en) { rg()->CR1.RXONLY = en; }
-    INLINE static void setSoftwareSlaveManagenemt(bool en) { rg()->CR1.SSM = en; }
-    INLINE static void setInternalSlaveSelect(bool en) { rg()->CR1.SSI = en; }
-    INLINE static void setMasterMode() { rg()->CR1.MSTR = 1; }
-    INLINE static void setSlaveMode() { rg()->CR1.MSTR = 0; }
-    INLINE static void setClockPolarity(ClockPolarity cp) { rg()->CR1.CPOL = cp; }
-    INLINE static void setClockPhase(ClockPhase cp) { rg()->CR1.CPHA = cp; }
-    INLINE static void stubRead() { UNUSED volatile uint16_t stub = rg()->DR.DR; }
+    static void rxDmaEnable(bool en) { rg()->CR2.RXDMAEN = en; }
+    static void txDmaEnable(bool en) { rg()->CR2.TXDMAEN = en; }
+    static void setBiDirectionalMode(bool en) { rg()->CR1.BIDIMODE = en; }
+    static void setRxOnly(bool en) { rg()->CR1.RXONLY = en; }
+    static void setSoftwareSlaveManagenemt(bool en) { rg()->CR1.SSM = en; }
+    static void setInternalSlaveSelect(bool en) { rg()->CR1.SSI = en; }
+    static void setMasterMode() { rg()->CR1.MSTR = 1; }
+    static void setSlaveMode() { rg()->CR1.MSTR = 0; }
+    static void setClockPolarity(ClockPolarity cp) { rg()->CR1.CPOL = cp; }
+    static void setClockPhase(ClockPhase cp) { rg()->CR1.CPHA = cp; }
+    static void stubRead() { [[maybe_unused]] volatile uint16_t stub = rg()->DR.DR; }
+
+    static bool writeByte(const uint8_t byte)
+    {
+      constexpr uint32_t maxCnt = 10165536;
+      uint32_t cnt = maxCnt;
+      rg()->CR1.SPE = 1;
+      while (!rg()->SR.TXE) {
+        --cnt;
+        if (0 == cnt) {
+          return false;
+        }
+      }
+
+      rg()->DR.DR = byte;
+      cnt = maxCnt;
+      while (rg()->SR.BSY) {
+        --cnt;
+        if (0 == cnt) {
+          rg()->CR1.SPE = 0;
+          return false;
+        }
+      }
+      rg()->CR1.SPE = 0;
+      return true;
+    }
+
+    static std::optional<uint8_t>readByte()
+    {
+      constexpr uint32_t maxCnt = 10165536;
+      uint32_t cnt = maxCnt;
+
+      rg()->CR1.SPE = 1;
+      rg()->DR.DR = 0;
+      while (!rg()->SR.RXNE) {
+        --cnt;
+        if (0 == cnt) {
+          rg()->CR1.SPE = 0;
+          return std::nullopt;
+        }
+      }
+
+      uint8_t byte = rg()->DR.DR;
+      rg()->CR1.SPE = 0;
+      return std::optional<uint8_t>{ byte };
+    }
 
     //------------------------------------------------------------------------
     template <typename T, typename S>
@@ -272,27 +318,79 @@ struct Spi {
         return true;
     }
 
-
-
-    //------------------------------------------------------------------------
     static void printRegs()
     {
-        dbg << "SPI " <<  Use::dec << Use::w0
+      con.debug() << "SPI " <<  Use::dec << Use::w0
             << num << ": " << Use::endl
             << Use::w8 << Use::hex;
-        dbg << Use::w8 << "  CR1:     " << ::asWord(rg()->CR1) << Use::endl;
-        dbg << Use::w8 << "  CR2:     " << ::asWord(rg()->CR2) << Use::endl;
-        dbg << Use::w8 << "  SR:      " << ::asWord(rg()->SR) << Use::endl;
-        dbg << Use::w8 << "  DR:      " << ::asWord(rg()->DR) << Use::endl;
-        dbg << Use::w8 << "  CRCPR:   " << ::asWord(rg()->CRCPR) << Use::endl;
-        dbg << Use::w8 << "  RXCRCR:  " << ::asWord(rg()->RXCRCR) << Use::endl;
-        dbg << Use::w8 << "  TXCRCR:  " << ::asWord(rg()->TXCRCR) << Use::endl;
-        dbg << Use::w8 << "  I2SCFGR: " << ::asWord(rg()->I2SCFGR) << Use::endl;
-        dbg << Use::w8 << "  I2SPR:   " << ::asWord(rg()->I2SPR) << Use::endl;
+      con.debug() << Use::w8 << "  CR1:     " << tl::asWord(rg()->CR1) << Use::endl;
+      con.debug() << Use::w8 << "  CR2:     " << tl::asWord(rg()->CR2) << Use::endl;
+      con.debug() << Use::w8 << "  SR:      " << tl::asWord(rg()->SR) << Use::endl;
+      con.debug() << Use::w8 << "  DR:      " << tl::asWord(rg()->DR) << Use::endl;
+      con.debug() << Use::w8 << "  CRCPR:   " << tl::asWord(rg()->CRCPR) << Use::endl;
+      con.debug() << Use::w8 << "  RXCRCR:  " << tl::asWord(rg()->RXCRCR) << Use::endl;
+      con.debug() << Use::w8 << "  TXCRCR:  " << tl::asWord(rg()->TXCRCR) << Use::endl;
+      con.debug() << Use::w8 << "  I2SCFGR: " << tl::asWord(rg()->I2SCFGR) << Use::endl;
+      con.debug() << Use::w8 << "  I2SPR:   " << tl::asWord(rg()->I2SPR) << Use::endl;
     }
 
+  static bool write(uint8_t* pBuf, uint16_t len)
+  {
+    uint32_t cnt = maxCnt;
+
+    rg()->CR1.SPE = 1;
+    for (uint16_t idx = 0; idx < len; ++idx) {
+
+      while (!rg()->SR.TXE) {
+        --cnt;
+        if (0 == cnt) {
+          return false;
+        }
+      }
+      rg()->DR.DR = pBuf[idx];
+    }
+    cnt = maxCnt;
+    while (rg()->SR.BSY) {
+      --cnt;
+      if (0 == cnt) {
+        rg()->CR1.SPE = 0;
+        return false;
+      }
+    }
+    rg()->CR1.SPE = 0;
+    return true;
+  }
+
+  static bool read(uint8_t* pBuf, uint16_t len)
+  {
+    uint32_t cnt = maxCnt;
+    rg()->CR1.SPE = 1;
+    for (uint16_t idx = 0; idx < len; ++idx) {
+
+      rg()->DR.DR = 0;
+
+      while (!rg()->SR.RXNE) {
+        --cnt;
+        if (0 == cnt) {
+          return false;
+        }
+      }
+      pBuf[idx] = rg()->DR.DR;
+    }
+    cnt = maxCnt;
+    while (rg()->SR.BSY) {
+      --cnt;
+      if (0 == cnt) {
+        rg()->CR1.SPE = 0;
+        return false;
+      }
+    }
+    rg()->CR1.SPE = 0;
+    return true;
+  }
+
+
+
 };
-
-
 
 #endif // SPI_H
