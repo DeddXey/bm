@@ -65,30 +65,30 @@ struct Dwt {
 
 	INLINE static volatile Regs* rg()
 	{
-		return reinterpret_cast<Regs*volatile>(base);
+		return reinterpret_cast<Regs*>(base);
 	}
 
 	INLINE static volatile uint32_t* rgDemcr()
 	{
-		return reinterpret_cast<uint32_t*volatile>(0xE000EDFC);
+		return reinterpret_cast<uint32_t*>(0xE000EDFC);
 	}
 
 	INLINE static void enableTrace(const bool en)
 	{
-		return ::setRegister(*rgDemcr(),
+		return tl::setRegister(*rgDemcr(),
 		                            DEMCR::EN, en);
 	}
 
 
 	INLINE static void enableCounter(const bool en)
 	{
-		return ::setRegister(rg()->CTRL,
+		return tl::setRegister(rg()->CTRL,
 		                            CTRL::EN, en);
 	}
 
 	INLINE static uint16_t getCounter()
 	{
-		return __LDREXW(&rg()->CYCNT);
+	  return cpu::ldrex(&rg()->CYCNT);
 	}
 	INLINE static uint16_t getControlRegister()
 	{

@@ -55,7 +55,7 @@ struct Pwr{
     ///
     INLINE static volatile Regs* rg()
     {
-        return reinterpret_cast<volatile Regs * volatile>(BASE);
+        return reinterpret_cast<volatile Regs * >(BASE);
     }
 
     ///---------------------------------------------------------------------
