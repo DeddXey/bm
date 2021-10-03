@@ -77,6 +77,7 @@ public:
     //------------------------------------------------------------------------
     void putChar(const uint8_t ch)
     {
+      tl::critical_section cs;
         if (getTxIdle()) {
             getTxIdle() = false;
             Port::putDr(ch);
@@ -90,6 +91,7 @@ public:
     //------------------------------------------------------------------------
     bool getChar(uint8_t & out)
     {
+      tl::critical_section cs;
         if (getRxFifo().empty())
             return false;
 
