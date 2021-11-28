@@ -36,6 +36,7 @@ public:
     void clearRxQueue()
     {
         rxBuffer.clear();
+        Port::setRxNotEmptyIt(true);
     }
 
     //------------------------------------------------------------------------

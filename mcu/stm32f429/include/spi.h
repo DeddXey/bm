@@ -204,12 +204,10 @@ struct Spi {
 
     static uint8_t getIrqN() { return spi_t<num>::SPI_IRQn; }
 
-    static void setBaudRate([[maybe_unused]] uint32_t br)
+    constexpr static void setBaudRate([[maybe_unused]] uint32_t br)
     {
         auto b = gcem::log2(Rcc::systemCoreClock() / spi_t<num>::getPrescaler());
         uint8_t d = b - 1;
-
-
         rg()->CR1.BR = d;
     }
 
