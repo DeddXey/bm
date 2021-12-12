@@ -400,7 +400,7 @@ struct Adc
 
     tl::setRegister(rg()->CR2, CR2::ADON, true);
 
-    simpleDelay(100000);
+    tl::simpleDelay(100000);
 
     tl::setRegister(rg()->CR2, CR2::RSTCAL, true);
 

@@ -1,7 +1,6 @@
 ﻿#ifndef __RCC_H
 #define __RCC_H
 
-
 #include "flash.h"
 #include "utility.h"
 #include <cstdint>
@@ -757,9 +756,9 @@ struct Rcc
   /// \brief Выбор источника тактирования для главной Pll
   /// \param en true - hse, false - hsi /2
   ///
-  static void pllClockSrcSelectHse(bool en)
+  static void pllClockSrcSelectHse(bool en, bool div_by_2 = false)
   {
-    tl::setRegister(rg()->CFGR, CFGR::PLLSRC, en);
+    tl::setRegister(rg()->CFGR, CFGR::PLLSRC, en, CFGR::PLLXTPRE, div_by_2);
   }
 
   ///---------------------------------------------------------------------
@@ -791,7 +790,7 @@ struct Rcc
   /// \brief Дефолтная конфигурация на 168 МГц
   /// \return
   ///
-  static bool defaultConfigPll72()
+  static bool defaultConfigPll72(bool hse_div_by_2 = false)
   {
     clockPwr(true);
     if (!hseEnable(true))
@@ -799,7 +798,7 @@ struct Rcc
 
     pllSet(9); // 72 MHz
 
-    pllClockSrcSelectHse(true);
+    pllClockSrcSelectHse(true, hse_div_by_2);
 
     if (!pllEnable(true))
       return false;
