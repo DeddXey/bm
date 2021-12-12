@@ -3,8 +3,7 @@
 #include "log/log.h"
 #include "nvic.h"
 #include "rcc.h"
-#include <stdint.h>
-#include <stdio.h>
+#include <cstdint>
 
 template<int num>
 struct spi_t;
@@ -13,9 +12,10 @@ template<>
 struct spi_t<1>
 {
   constexpr static uint32_t SPI_BASE = 0x40013000;
-  static void INLINE        clockEnable(const bool en)
+
+  static void clockEnable(const bool val)
   {
-    Rcc::clockSpi1(en);
+    Rcc::clockSpi1(val);
   }
   constexpr static uint32_t SPI_IRQn =
     Nvic::itSpi1; ///< I2C1 event global interrupt
@@ -25,9 +25,10 @@ template<>
 struct spi_t<2>
 {
   constexpr static uint32_t SPI_BASE = 0x40003800;
-  static void INLINE        clockEnable(const bool en)
+
+  static void clockEnable(const bool val)
   {
-    Rcc::clockSpi2(en);
+    Rcc::clockSpi2(val);
   }
   constexpr static uint32_t SPI_IRQn =
     Nvic::itSpi2; ///< I2C1 event global interrupt
@@ -37,9 +38,10 @@ template<>
 struct spi_t<3>
 {
   constexpr static uint32_t SPI_BASE = 0x40003C00;
-  static void INLINE        clockEnable(const bool en)
+
+  static void clockEnable(const bool val)
   {
-    Rcc::clockSpi3(en);
+    Rcc::clockSpi3(val);
   }
   constexpr static uint32_t SPI_IRQn =
     Nvic::itSpi3; ///< I2C1 event global interrupt
@@ -155,12 +157,9 @@ struct Spi
 #ifdef DEBUG
   volatile Regs *const debug = reinterpret_cast<Regs *>(spi_t<num>::SPI_BASE);
 #endif
-  //    constexpr static volatile Regs* const i2c =
-  //    /*reinterpret_cast<Regs*>*/(Regs*)(I2C_BASE);
 
   constexpr static uint32_t addressDr = spi_t<num>::SPI_BASE + (4 * 3);
 
-  ///---------------------------------------------------------------------
   ///
   /// \brief Включение тактирования
   ///
@@ -169,7 +168,6 @@ struct Spi
     spi_t<num>::clockEnable(en);
   }
 
-  ///---------------------------------------------------------------------
   ///
   /// \brief Получение указателя на регистры
   /// \return указатель на регистры
@@ -179,20 +177,17 @@ struct Spi
     return reinterpret_cast<volatile Regs *volatile>(spi_t<num>::SPI_BASE);
   }
 
-  enum ClockPhase
-  {
+  enum ClockPhase {
     cpFirstEdge  = 0,
     cpSecondEdge = 1
   };
 
-  enum ClockPolarity
-  {
+  enum ClockPolarity {
     cpIdleLow  = 0,
     cpIdleHigh = 1
   };
 
-  enum BaudRate
-  {
+  enum BaudRate {
     br2   = 0b000,
     br4   = 0b001,
     br8   = 0b010,
@@ -203,7 +198,6 @@ struct Spi
     br256 = 0b111,
   };
 
-  //------------------------------------------------------------------------
   static void initMasterDefault(Spi<num>::BaudRate br,
                                 ClockPolarity      cp,
                                 ClockPhase         cph,
@@ -227,109 +221,125 @@ struct Spi
                     softSlaveSelect);
   }
 
-  //------------------------------------------------------------------------
   static uint8_t getIrqN()
   {
     return spi_t<num>::SPI_IRQn;
   }
 
-  //------------------------------------------------------------------------
   static void setBaudRate(Spi<num>::BaudRate br)
   {
     tl::setRegister(rg()->CR1, CR1::BR, static_cast<uint8_t>(br));
   }
 
-  //------------------------------------------------------------------------
+  constexpr static void setBaudRate([[maybe_unused]] uint32_t br)
+  {
+    uint8_t log = 0;
+    uint32_t f= Rcc::systemCoreClock() / spi_t<num>::getPrescaler() / br;
+
+    while (f) {
+      ++log;
+      f >>= 1;
+    }
+    tl::setRegister(rg()->CR1, CR1::BR, log);
+  }
+
   static void enable(const bool en)
   {
     tl::setRegister(rg()->CR1, CR1::SPE, en);
   }
 
-  //------------------------------------------------------------------------
   static volatile uint16_t *getDrAddress()
   {
     return reinterpret_cast<volatile uint16_t *>(&(rg()->DR));
   }
 
-  //------------------------------------------------------------------------
   static void rxneIntEnable(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::RXNEIE, en);
   }
 
-  //------------------------------------------------------------------------
   static void txeIntEnable(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::TXEIE, en);
   }
 
-  //------------------------------------------------------------------------
   static void rxDmaEnable(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::RXDMAEN, en);
   }
 
-  //------------------------------------------------------------------------
   static void txDmaEnable(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::TXDMAEN, en);
   }
 
-  //------------------------------------------------------------------------
   static void setBiDirectionalMode(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::BIDIMODE, en);
   }
 
-  //------------------------------------------------------------------------
   static void setRxOnly(bool en)
   {
     tl::setRegister(rg()->CR12, CR1::RXONLY, en);
   }
 
-  //------------------------------------------------------------------------
   static void setSoftwareSlaveManagenemt(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::SSM, en);
   }
 
-  //------------------------------------------------------------------------
   static void setInternalSlaveSelect(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::SSI, en);
   }
 
-  //------------------------------------------------------------------------
   static void setMasterMode()
   {
     tl::setRegister(rg()->CR1, CR1::MSTR, 1);
   }
 
-  //------------------------------------------------------------------------
   static void setSlaveMode()
   {
     tl::setRegister(rg()->CR1, CR1::MSTR, 0);
   }
 
-  //------------------------------------------------------------------------
   static void setClockPolarity(ClockPolarity cp)
   {
     tl::setRegister(rg()->CR1, CR1::CPOL, cp);
   }
 
-  //------------------------------------------------------------------------
   static void setClockPhase(ClockPhase cp)
   {
     tl::setRegister(rg()->CR1, CR1::CPHA, cp);
   }
 
-  //------------------------------------------------------------------------
+  static void set_dr(uint16_t value)
+  {
+    rg()->DR = value;
+  }
+
+  static void get_dr()
+  {
+    return rg()->DR;
+  }
+
   static void stubRead()
   {
     volatile uint16_t stub = rg()->DR;
   }
 
-  //------------------------------------------------------------------------
+  static bool is_tx_empty()
+  {
+    return tl::getRegField(rg()->SR, SR::TXE);
+  }
+
+  static bool is_rx_notempty()
+  {
+    return tl::getRegField(rg()->SR, SR::TXE);
+  }
+
+  static bool wait_for_txe(uint32_t counter) {}
+
   static void printRegs()
   {
     con.debug() << "SPI " << Use::dec << Use::w0 << num << ": " << Use::endl
