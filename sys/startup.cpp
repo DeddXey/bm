@@ -10,7 +10,6 @@ extern unsigned long _sdata;
 extern unsigned long _edata;
 extern unsigned long _sbss;
 extern unsigned long _ebss;
-//extern unsigned long _estack;
 extern unsigned long __ctors_start__;
 extern unsigned long __ctors_end__;
 
@@ -20,13 +19,12 @@ extern unsigned long __ctors_end__;
 extern int main(void);
 void __Init_Data(void);
 
-//extern void init_HW(void);
 extern "C" void __libc_init_array();
 
 ///**********************************************************
 /// \brief ISR::Reset
 ///
-__attribute__((noreturn)) void Isr::Reset(void) {
+[[noreturn]] void Isr::Reset(void) {
     __asm ("ldr   r0, =_estack");
     __asm ("mov   sp, r0");
 
@@ -43,11 +41,9 @@ __attribute__((noreturn)) void Isr::Reset(void) {
 
     main();
 
-    while(1) {};
-
+    while(true) {};
 }
 
-///**********************************************************
 /// \brief __Init_Data
 ///
 void __Init_Data(void)
@@ -69,7 +65,7 @@ void __Init_Data(void)
     /* Call constructors */
     unsigned long *ctors;
     for(ctors = &__ctors_start__; ctors < &__ctors_end__; )
-        ((void(*)(void))(*ctors++))();
+        ((void(*)())(*ctors++))();
 }
 
 
