@@ -11,16 +11,14 @@ constexpr uint32_t gpio_regs[]{
 template<char a>
 struct gpio_base_t
 {
-
 };
 
 // Base addresses
 
-
 template<>
 struct gpio_base_t<'A'>
 {
-//  constexpr static uint32_t GPIO_BASE = 0x40010800;
+  //  constexpr static uint32_t GPIO_BASE = 0x40010800;
 
   static void clockEnable(bool value)
   {
@@ -31,7 +29,7 @@ struct gpio_base_t<'A'>
 template<>
 struct gpio_base_t<'B'>
 {
-//  constexpr static uint32_t GPIO_BASE = 0x40010C00;
+  //  constexpr static uint32_t GPIO_BASE = 0x40010C00;
 
   static void clockEnable(bool value)
   {
@@ -42,7 +40,7 @@ struct gpio_base_t<'B'>
 template<>
 struct gpio_base_t<'C'>
 {
-//  constexpr static uint32_t GPIO_BASE = 0x40011000;
+  //  constexpr static uint32_t GPIO_BASE = 0x40011000;
 
   static void clockEnable(bool value)
   {
@@ -53,7 +51,7 @@ struct gpio_base_t<'C'>
 template<>
 struct gpio_base_t<'D'>
 {
-//  constexpr static uint32_t GPIO_BASE = 0x40011400;
+  //  constexpr static uint32_t GPIO_BASE = 0x40011400;
 
   static void clockEnable(bool value)
   {
@@ -64,7 +62,7 @@ struct gpio_base_t<'D'>
 template<>
 struct gpio_base_t<'E'>
 {
-//  constexpr static uint32_t GPIO_BASE = 0x40011800;
+  //  constexpr static uint32_t GPIO_BASE = 0x40011800;
 
   static void clockEnable(bool value)
   {
@@ -75,7 +73,7 @@ struct gpio_base_t<'E'>
 template<char a>
 struct gpio_t : gpio_base_t<a>
 {
-  constexpr static uint32_t GPIO_BASE = gpio_regs[a -'A'];
+  constexpr static uint32_t GPIO_BASE = gpio_regs[a - 'A'];
 };
 
 /**
@@ -180,7 +178,7 @@ struct Gpio
 
   /// \brief Получение указателя на регистры в "сыром" виде
   /// \return указатель на регистры в "сыром" виде
-   static volatile GpioRawRegs *rgRaw()
+  static volatile GpioRawRegs *rgRaw()
   {
     return reinterpret_cast<GpioRawRegs *>(gpio_t<a>::GPIO_BASE);
   }
@@ -196,13 +194,12 @@ struct Gpio
     gpio_t<a>::clockEnable(value);
   }
 
-    /// \brief Установка альтернативной функции
-    /// \param val альтернативная функция
-    /// \param args список номеров пинов
-     template<typename T>
-    static void setMode(const PinMode          mode,
-                        const PinConfiguration configuration,
-                        const T                pos)
+  /// \brief Установка альтернативной функции
+  /// \param val альтернативная функция
+  /// \param args список номеров пинов
+  template<typename T>
+  static void
+  setMode(const PinMode mode, const PinConfiguration configuration, const T pos)
   {
     uint32_t       index = (pos & 0x8) >> 3;
     const T        pos8  = pos & 0x7;
@@ -217,7 +214,7 @@ struct Gpio
   /// \brief Установка альтернативной функции
   /// \param val альтернативная функция
   /// \param args список номеров пинов
-   template<typename T, typename... Args>
+  template<typename T, typename... Args>
   static void setMode(const PinMode          mode,
                       const PinConfiguration configuration,
                       const T                pos,
@@ -245,7 +242,7 @@ struct Gpio
 
   /// \brief Установка пинов в 0
   /// \param args список номеров пинов
-   template<typename... Args>
+  template<typename... Args>
   static void resetPin(const Args... args)
   {
     uint32_t value = tl::setBitGroup(1, 1, args...);
@@ -293,6 +290,28 @@ void gpio_set_mode(const uint8_t          port,
 
   gpio_get_regs(port)->CR[index] =
     (gpio_get_regs(port)->CR[index] & (~mask)) | value;
+}
+
+void gpio_set_pin(const uint8_t port, const uint8_t pin)
+{
+  gpio_get_regs(port)->BSRR = gpio_get_regs(port)->BSRR | (1 << pin);
+}
+
+void gpio_reset_pin(const uint8_t port, const uint8_t pin)
+{
+  gpio_get_regs(port)->BSRR = gpio_get_regs(port)->BSRR | (1 << (pin + 16));
+}
+
+void gpio_set_out(const uint8_t port, const uint8_t pin, const bool val)
+{
+  const uint32_t mask  = ~(1 << pin);
+  const uint32_t value = val << pin;
+  gpio_get_regs(port)->ODR = (gpio_get_regs(port)->ODR & (~mask)) | value;
+}
+
+bool gpio_get_pin(const uint8_t port, const uint8_t pin)
+{
+  return gpio_get_regs(port)->IDR & (1 << pin);
 }
 
 #endif // GPIO_H
