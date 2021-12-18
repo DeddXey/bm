@@ -17,7 +17,7 @@ extern "C"
 {
 namespace Isr
 {
-void DefaultHandler();
+  [[noreturn]] void DefaultHandler();
 struct ShortVectors
 {
     uint32_t estack;
@@ -27,12 +27,6 @@ struct ShortVectors
 struct Vectors
 {
     const uint32_t estack1;
-
-
-
-
-
-
 
 
     void (*Reset)               (void);

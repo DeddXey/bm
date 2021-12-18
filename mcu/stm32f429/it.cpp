@@ -8,9 +8,9 @@
  **/
 //#include "stm32f0xx.h"
 #include "it.h"
+#include "mcu/stm32f429/include/it.h"
 
-
-void Isr::DefaultHandler()
+[[noreturn]] void Isr::DefaultHandler()
 {
     for(;;) {
 
