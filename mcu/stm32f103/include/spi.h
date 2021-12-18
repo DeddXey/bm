@@ -163,9 +163,9 @@ struct Spi
   ///
   /// \brief Включение тактирования
   ///
-  static void clockEnable(const bool en)
+  static void clockEnable(const bool value)
   {
-    spi_t<num>::clockEnable(en);
+    spi_t<num>::clockEnable(value);
   }
 
   ///
@@ -198,9 +198,9 @@ struct Spi
     br256 = 0b111,
   };
 
-  static void initMasterDefault(Spi<num>::BaudRate br,
-                                ClockPolarity      cp,
-                                ClockPhase         cph,
+  static void initMasterDefault(Spi<num>::BaudRate baudRate,
+                                ClockPolarity      clockPolarity,
+                                ClockPhase         clockPhase,
                                 bool               softSlaveManagement,
                                 bool               softSlaveSelect)
   {
@@ -208,13 +208,13 @@ struct Spi
 
     tl::setRegister(rg()->CR1,
                     CR1::BR,
-                    static_cast<uint8_t>(br),
+                    static_cast<uint8_t>(baudRate),
                     CR1::MSTR,
                     1,
                     CR1::CPOL,
-                    cp,
+                    clockPolarity,
                     CR1::CPHA,
-                    cph,
+                    clockPhase,
                     CR1::SSM,
                     softSlaveManagement,
                     CR1::SSI,
@@ -226,26 +226,28 @@ struct Spi
     return spi_t<num>::SPI_IRQn;
   }
 
-  static void setBaudRate(Spi<num>::BaudRate br)
+  static void setBaudRate(Spi<num>::BaudRate baud_rate)
   {
-    tl::setRegister(rg()->CR1, CR1::BR, static_cast<uint8_t>(br));
+    tl::setRegister(rg()->CR1, CR1::BR, static_cast<uint8_t>(baud_rate));
   }
 
-  constexpr static void setBaudRate([[maybe_unused]] uint32_t br)
+
+
+  constexpr static void setBaudRate(uint32_t baud_rate)
   {
     uint8_t log = 0;
-    uint32_t f= Rcc::systemCoreClock() / spi_t<num>::getPrescaler() / br;
+    uint32_t frequency = Rcc::apb1Clk() / baud_rate;
 
-    while (f) {
+    while (frequency) {
       ++log;
-      f >>= 1;
+      frequency >>= 1;
     }
     tl::setRegister(rg()->CR1, CR1::BR, log);
   }
 
-  static void enable(const bool en)
+  static void enable(const bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::SPE, en);
+    tl::setRegister(rg()->CR1, CR1::SPE, value);
   }
 
   static volatile uint16_t *getDrAddress()
@@ -253,44 +255,44 @@ struct Spi
     return reinterpret_cast<volatile uint16_t *>(&(rg()->DR));
   }
 
-  static void rxneIntEnable(bool en)
+  static void rxneIntEnable(bool value)
   {
-    tl::setRegister(rg()->CR2, CR2::RXNEIE, en);
+    tl::setRegister(rg()->CR2, CR2::RXNEIE, value);
   }
 
-  static void txeIntEnable(bool en)
+  static void txeIntEnable(bool value)
   {
-    tl::setRegister(rg()->CR2, CR2::TXEIE, en);
+    tl::setRegister(rg()->CR2, CR2::TXEIE, value);
   }
 
-  static void rxDmaEnable(bool en)
+  static void rxDmaEnable(bool value)
   {
-    tl::setRegister(rg()->CR2, CR2::RXDMAEN, en);
+    tl::setRegister(rg()->CR2, CR2::RXDMAEN, value);
   }
 
-  static void txDmaEnable(bool en)
+  static void txDmaEnable(bool value)
   {
-    tl::setRegister(rg()->CR2, CR2::TXDMAEN, en);
+    tl::setRegister(rg()->CR2, CR2::TXDMAEN, value);
   }
 
-  static void setBiDirectionalMode(bool en)
+  static void setBiDirectionalMode(bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::BIDIMODE, en);
+    tl::setRegister(rg()->CR1, CR1::BIDIMODE, value);
   }
 
-  static void setRxOnly(bool en)
+  static void setRxOnly(bool value)
   {
-    tl::setRegister(rg()->CR12, CR1::RXONLY, en);
+    tl::setRegister(rg()->CR12, CR1::RXONLY, value);
   }
 
-  static void setSoftwareSlaveManagenemt(bool en)
+  static void setSoftwareSlaveManagenemt(bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::SSM, en);
+    tl::setRegister(rg()->CR1, CR1::SSM, value);
   }
 
-  static void setInternalSlaveSelect(bool en)
+  static void setInternalSlaveSelect(bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::SSI, en);
+    tl::setRegister(rg()->CR1, CR1::SSI, value);
   }
 
   static void setMasterMode()
@@ -303,14 +305,14 @@ struct Spi
     tl::setRegister(rg()->CR1, CR1::MSTR, 0);
   }
 
-  static void setClockPolarity(ClockPolarity cp)
+  static void setClockPolarity(ClockPolarity clockPolarity)
   {
-    tl::setRegister(rg()->CR1, CR1::CPOL, cp);
+    tl::setRegister(rg()->CR1, CR1::CPOL, clockPolarity);
   }
 
-  static void setClockPhase(ClockPhase cp)
+  static void setClockPhase(ClockPhase clockPhase)
   {
-    tl::setRegister(rg()->CR1, CR1::CPHA, cp);
+    tl::setRegister(rg()->CR1, CR1::CPHA, clockPhase);
   }
 
   static void set_dr(uint16_t value)
@@ -333,7 +335,7 @@ struct Spi
     return tl::getRegField(rg()->SR, SR::TXE);
   }
 
-  static bool is_rx_notempty()
+  static bool is_rx_not_empty()
   {
     return tl::getRegField(rg()->SR, SR::TXE);
   }
