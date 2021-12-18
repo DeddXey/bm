@@ -218,7 +218,7 @@ template<char a>
 struct Gpio
 {
 
-  struct RawRegs
+  struct GpioRawRegs
   {
     uint32_t MODER;
     uint32_t OTYPER;
@@ -236,9 +236,9 @@ struct Gpio
   /// \brief Получение указателя на регистры в "сыром" виде
   /// \return указатель на регистры в "сыром" виде
   ///
-  static volatile RawRegs *rgRaw()
+  static volatile GpioRawRegs *rgRaw()
   {
-    return reinterpret_cast<RawRegs *>(gpio_t<a>::GPIO_BASE);
+    return reinterpret_cast<GpioRawRegs *>(gpio_t<a>::GPIO_BASE);
   }
 
   ///---------------------------------------------------------------------
