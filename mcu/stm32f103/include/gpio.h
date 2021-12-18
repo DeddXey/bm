@@ -4,14 +4,23 @@
 #include "rcc.h"
 #include "utility.h"
 
-// Base addresses
+constexpr uint32_t gpio_regs[]{
+  0x40010800, 0x40010C00, 0x40011000, 0x40011400, 0x40011800,
+};
+
 template<char a>
-struct gpio_t;
+struct gpio_base_t
+{
+
+};
+
+// Base addresses
+
 
 template<>
-struct gpio_t<'A'>
+struct gpio_base_t<'A'>
 {
-  constexpr static uint32_t GPIO_BASE = 0x40010800;
+//  constexpr static uint32_t GPIO_BASE = 0x40010800;
 
   static void clockEnable(bool value)
   {
@@ -20,9 +29,9 @@ struct gpio_t<'A'>
 };
 
 template<>
-struct gpio_t<'B'>
+struct gpio_base_t<'B'>
 {
-  constexpr static uint32_t GPIO_BASE = 0x40010C00;
+//  constexpr static uint32_t GPIO_BASE = 0x40010C00;
 
   static void clockEnable(bool value)
   {
@@ -31,9 +40,9 @@ struct gpio_t<'B'>
 };
 
 template<>
-struct gpio_t<'C'>
+struct gpio_base_t<'C'>
 {
-  constexpr static uint32_t GPIO_BASE = 0x40011000;
+//  constexpr static uint32_t GPIO_BASE = 0x40011000;
 
   static void clockEnable(bool value)
   {
@@ -42,9 +51,9 @@ struct gpio_t<'C'>
 };
 
 template<>
-struct gpio_t<'D'>
+struct gpio_base_t<'D'>
 {
-  constexpr static uint32_t GPIO_BASE = 0x40011400;
+//  constexpr static uint32_t GPIO_BASE = 0x40011400;
 
   static void clockEnable(bool value)
   {
@@ -53,14 +62,20 @@ struct gpio_t<'D'>
 };
 
 template<>
-struct gpio_t<'E'>
+struct gpio_base_t<'E'>
 {
-  constexpr static uint32_t GPIO_BASE = 0x40011800;
+//  constexpr static uint32_t GPIO_BASE = 0x40011800;
 
   static void clockEnable(bool value)
   {
     Rcc::clockIopE(value);
   }
+};
+
+template<char a>
+struct gpio_t : gpio_base_t<a>
+{
+  constexpr static uint32_t GPIO_BASE = gpio_regs[a -'A'];
 };
 
 /**
@@ -261,11 +276,7 @@ struct Gpio
 // Dynamic GPIO section
 GpioRawRegs *gpio_get_regs(const uint8_t port)
 {
-  constexpr uint32_t regs[]{
-    0x40010800, 0x40010C00, 0x40011000, 0x40011400, 0x40011800,
-  };
-
-  return reinterpret_cast<GpioRawRegs *>(regs[port - 'A']);
+  return reinterpret_cast<GpioRawRegs *>(gpio_regs[port - 'A']);
 }
 
 void gpio_set_mode(const uint8_t          port,
