@@ -104,12 +104,12 @@ struct Vectors
 
 };
 
-[[noreturn]] void Reset               ();
+void Reset               ();
 void Nmi                 ();
-[[noreturn]] void HardFault           ();
-[[noreturn]] void MemManage           ();
-[[noreturn]] void BusFault            ();
-[[noreturn]] void UsageFault          ();
+void HardFault           ();
+void MemManage           ();
+void BusFault            ();
+void UsageFault          ();
 void Svc                 ();
 void DebugMon            ();
 void PendSv              ();

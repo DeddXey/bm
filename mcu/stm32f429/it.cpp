@@ -10,7 +10,7 @@
 #include "it.h"
 #include "mcu/stm32f429/include/it.h"
 
-[[noreturn]] void Isr::DefaultHandler()
+[[noreturn]] [[noreturn]] void Isr::DefaultHandler()
 {
     for(;;) {
 
