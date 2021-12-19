@@ -83,7 +83,7 @@ public:
     I::SpiLL::setBaudRate(I::SpiP::br4);
     I::SpiLL::setBiDirectionalMode(true);
     I::SpiLL::setRxOnly(true);
-    I::SpiLL::setSoftwareSlaveManagenemt(true);
+    I::SpiLL::setSoftwareSlaveManagement(true);
     I::SpiLL::setInternalSlaveSelect(true);
     I::SpiLL::setMasterMode();
     I::SpiLL::setClockPhase(I::SpiP::cpFirstEdge);

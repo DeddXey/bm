@@ -24,7 +24,7 @@ extern "C" void __libc_init_array();
 ///**********************************************************
 /// \brief ISR::Reset
 ///
-[[noreturn]] void Isr::Reset(void) {
+void Isr::Reset(void) {
     __asm ("ldr   r0, =_estack");
     __asm ("mov   sp, r0");
 

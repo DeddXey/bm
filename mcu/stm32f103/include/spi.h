@@ -285,7 +285,7 @@ struct Spi
     tl::setRegister(rg()->CR12, CR1::RXONLY, value);
   }
 
-  static void setSoftwareSlaveManagenemt(bool value)
+  static void setSoftwareSlaveManagement(bool value)
   {
     tl::setRegister(rg()->CR1, CR1::SSM, value);
   }

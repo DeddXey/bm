@@ -1,19 +1,8 @@
-// This is an independent project of an individual developer. Dear PVS-Studio,
-// please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-/*********************************************************
- * ISRstm32f10x_ld.cpp
- * Automatic generated source file for MCU stm32f10x_ld
- *
- *
- **/
-//#include "stm32f0xx.h"
 #include "it.h"
 
-void Isr::DefaultHandler() {
-
-  for (;;) {
-  };
+void Isr::DefaultHandler()
+{
+  for (;;) {}
 }
 
 extern "C" const uint32_t _estack;
@@ -39,10 +28,10 @@ ISR::Vectors MeminterruptsVectorTable = {
     Isr::MemManage,
     Isr::BusFault,
     Isr::UsageFault,
-    {0, 0, 0, 0}, //
+    {nullptr, nullptr, nullptr, nullptr}, //
     Isr::Svc,
     Isr::DebugMon,
-    0, //
+    nullptr, //
     Isr::PendSv,
     Isr::SysTickTimer,
 

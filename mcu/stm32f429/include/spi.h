@@ -223,7 +223,7 @@ struct Spi {
     static void txDmaEnable(bool en) { rg()->CR2.TXDMAEN = en; }
     static void setBiDirectionalMode(bool en) { rg()->CR1.BIDIMODE = en; }
     static void setRxOnly(bool en) { rg()->CR1.RXONLY = en; }
-    static void setSoftwareSlaveManagenemt(bool en) { rg()->CR1.SSM = en; }
+    static void setSoftwareSlaveManagement(bool en) { rg()->CR1.SSM = en; }
     static void setInternalSlaveSelect(bool en) { rg()->CR1.SSI = en; }
     static void setMasterMode() { rg()->CR1.MSTR = 1; }
     static void setSlaveMode() { rg()->CR1.MSTR = 0; }

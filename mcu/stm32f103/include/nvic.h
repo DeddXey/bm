@@ -131,10 +131,10 @@ struct Nvic {
 
     static void enableIrq(Nvic::IrqType it) { rg()->ISER[it >> 5] = (1 << (it & 0x1f)); }
     static void disableIrq(Nvic::IrqType it) { rg()->ICER[it >> 5] = (1 << (it & 0x1f)); }
-    static bool getPendingIrq(Nvic::IrqType it) { return ((rg()->ISPR[it >> 5] & (1 << (it & 0x1f)))?true:false); }
+    static bool getPendingIrq(Nvic::IrqType it) { return (rg()->ISPR[it >> 5] & (1 << (it & 0x1f))) != 0; }
     static void setPendingIrq(Nvic::IrqType it) { rg()->ISPR[it >> 5] = (1 << (it & 0x1f)); }
     static void clearPendingIrq(Nvic::IrqType it) { rg()->ICPR[it >> 5] = (1 << (it & 0x1f)); }
-    static bool getActive(Nvic::IrqType it) { return ((rg()->IABR[it >> 5] & (1 << (it & 0x1f)))?true:false); }
+    static bool getActive(Nvic::IrqType it) { return (rg()->IABR[it >> 5] & (1 << (it & 0x1f))) != 0; }
     static void setPriority(Nvic::IrqType it, uint32_t priority)
     {
         if(it < 0) {

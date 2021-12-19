@@ -47,7 +47,7 @@ public:
     I::SpiP::setBaudRate(I::SpiP::br16);
     I::SpiP::setBiDirectionalMode(true);
     I::SpiP::setRxOnly(true);
-    I::SpiP::setSoftwareSlaveManagenemt(true);
+    I::SpiP::setSoftwareSlaveManagement(true);
     I::SpiP::setInternalSlaveSelect(true);
     I::SpiP::setMasterMode();
     I::SpiP::setClockPhase(I::SpiP::cpFirstEdge);
