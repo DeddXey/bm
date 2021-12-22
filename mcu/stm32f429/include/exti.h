@@ -146,7 +146,7 @@ struct Exti
 
     INLINE static void clearPending()
     {
-        rg()->PR |= (1 << pin);
+        rg()->PR = rg()->PR | (1 << pin);
     }
 
     INLINE static bool isPending()

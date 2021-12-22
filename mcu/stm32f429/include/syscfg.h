@@ -69,8 +69,8 @@ struct Syscfg {
         uint8_t index = (pin >> 2) & 0x3;
         uint8_t pos = (pin & 0x3) * 4;
 
-        Syscfg::rg()->EXTICR[index] &= ~ (0xf << pos);
-        Syscfg::rg()->EXTICR[index] |= (value << pos);
+        Syscfg::rg()->EXTICR[index] = Syscfg::rg()->EXTICR[index] & ( ~ (0xf << pos));
+        Syscfg::rg()->EXTICR[index] = Syscfg::rg()->EXTICR[index] | (value << pos);
 
     }
 
