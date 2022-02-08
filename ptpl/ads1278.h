@@ -167,7 +167,7 @@ public:
     ads1278Sync(false);
     //		simpleDelay(1000);
 
-    for (volatile uint32_t i = 0; i < 1000; ++i) {
+    for (uint32_t i = 0; i < 1000; ++i) {
       asm("nop"); // чтобы оптимизатор не оптимизировал
     }
 
