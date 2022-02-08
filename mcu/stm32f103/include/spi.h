@@ -315,12 +315,12 @@ struct Spi
     tl::setRegister(rg()->CR1, CR1::CPHA, clockPhase);
   }
 
-  static void set_dr(uint16_t value)
+  template<typename T>
+  static void set_dr(T value)
   {
     rg()->DR = value;
   }
-
-  static void get_dr()
+  static uint16_t get_dr()
   {
     return rg()->DR;
   }
@@ -340,7 +340,12 @@ struct Spi
     return tl::getRegField(rg()->SR, SR::TXE);
   }
 
-  static bool wait_for_txe(uint32_t counter) {}
+  static bool is_busy()
+  {
+    return tl::getRegField(rg()->SR, SR::BSY);
+  }
+
+//  static bool wait_for_txe(uint32_t counter) {}
 
   static void printRegs()
   {

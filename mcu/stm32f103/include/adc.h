@@ -1,7 +1,7 @@
 ﻿#ifndef __ADC1_H
 #define __ADC1_H
 
-#include "log/log.h"
+#include "log.h"
 #include "nvic.h"
 #include "utility.h"
 #include <cstdint>
@@ -13,9 +13,9 @@ template<>
 struct adc_t<1>
 {
   constexpr static uint32_t base = 0x40012400;
-  static void INLINE        clockEnable(bool en)
+  static void  clockEnable(bool val)
   {
-    Rcc::clockAdc1(en);
+    Rcc::clockAdc1(val);
   }
   constexpr static uint32_t interrupt = Nvic::itAdc;
 };
@@ -24,9 +24,9 @@ template<>
 struct adc_t<2>
 {
   constexpr static uint32_t base = 0x40012800;
-  static void INLINE        clockEnable(bool en)
+  static void  clockEnable(bool val)
   {
-    Rcc::clockAdc2(en);
+    Rcc::clockAdc2(val);
   }
   constexpr static uint32_t interrupt = Nvic::itAdc;
 };
@@ -35,7 +35,7 @@ template<>
 struct adc_t<3>
 {
   constexpr static uint32_t base = 0x40013C00;
-  static void INLINE        clockEnable(bool en)
+  static void  clockEnable(bool en)
   {
     Rcc::clockAdc3(en);
   }
@@ -66,7 +66,7 @@ enum class AdcSampleTime : uint8_t
   st239_5 = 0b111,
 };
 
-struct AdcChannels
+struct AdcChannel
 {
   uint8_t       channel;
   AdcSampleTime sampleTime;
@@ -382,19 +382,19 @@ struct Adc
   /// \brief Получение указателя на регистры
   /// \return указатель на регистры
   ///
-  INLINE constexpr static volatile Regs *rg()
+  constexpr static volatile Regs *rg()
   {
     return reinterpret_cast<volatile Regs *>(adc_t<num>::base);
   }
 
   //------------------------------------------------------------------------
   template<typename T>
-  INLINE static void initCommonSequence(T &  initSequence,
+  static void initCommonSequence(T &  initSequence,
                                         bool enableExtTrigger,
                                         const AdcRegularTrigger trg,
                                         bool                    dmaEnable)
   {
-    constexpr static uint8_t chNum = sizeof(T) / sizeof(AdcChannels);
+    constexpr static uint8_t chNum = sizeof(T) / sizeof(AdcChannel);
 
     Adc<1>::clockEnable(true);
 
@@ -436,13 +436,13 @@ struct Adc
   }
 
   //------------------------------------------------------------------------
-  static void INLINE clockEnable(bool en)
+  static void clockEnable(bool en)
   {
     adc_t<num>::clockEnable(en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void setSampleTime(uint8_t channel, AdcSampleTime sampleTime)
+  static void setSampleTime(uint8_t channel, AdcSampleTime sampleTime)
   {
     uint8_t index  = 1 - (channel) / 10;
     uint8_t offset = channel % 10;
@@ -452,7 +452,7 @@ struct Adc
   }
 
   //------------------------------------------------------------------------
-  INLINE static void setChannelSequence(uint8_t position, uint8_t channel)
+  static void setChannelSequence(uint8_t position, uint8_t channel)
   {
 
     uint8_t index  = 2 - (position) / 6;
@@ -463,71 +463,71 @@ struct Adc
   }
 
   //------------------------------------------------------------------------
-  INLINE static void setScanNumber(uint8_t number)
+  static void setScanNumber(uint8_t number)
   {
     tl::setRegister(rg()->SQR[0], SQR1::L, number - 1);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enableEocInterrupt(bool en)
+  static void enableEocInterrupt(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::EOCIE, en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enableDiscontinousMode(bool en)
+  static void enableDiscontinousMode(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::DISCEN, en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enableJeocInterrupt(bool en)
+  static void enableJeocInterrupt(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::JEOCIE, en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enableScanMode(bool en)
+  static void enableScanMode(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::SCAN, en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void setDiscontinuesChannelCount(const uint8_t cnt)
+  static void setDiscontinuesChannelCount(const uint8_t cnt)
   {
     tl::setRegister(rg()->CR1, CR1::DISCNUM, (cnt & 0x7) - 1);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void selectExternalTrigger(const AdcRegularTrigger trg)
+  static void selectExternalTrigger(const AdcRegularTrigger trg)
   {
     tl::setRegister(rg()->CR2, CR2::EXTSEL, static_cast<uint8_t>(trg));
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enableExternalTrigger(bool en)
+  static void enableExternalTrigger(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::EXTTRIG, en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enableDma(bool en)
+  static void enableDma(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::DMA, en);
   }
 
   //------------------------------------------------------------------------
-  INLINE static void enable(bool en)
+  static void enable(bool en)
   {
     tl::setRegister(rg()->CR2, CR2::ADON, en);
   }
   //------------------------------------------------------------------------
-  INLINE static void clearEocFlag()
+  static void clearEocFlag()
   {
     tl::setRegister(rg()->SR, SR::EOC, 0);
   }
   //------------------------------------------------------------------------
-  INLINE static bool getEocFlag()
+  static bool getEocFlag()
   {
     return tl::getRegField(rg()->SR, SR::EOC);
   }
