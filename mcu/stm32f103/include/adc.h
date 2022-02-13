@@ -532,18 +532,20 @@ struct Adc
     return tl::getRegField(rg()->SR, SR::EOC);
   }
 
-  static void dumpRegisters()
-  {
-    con.debug() << "ADC: " << num << Use::endl;
 
-    con.debug() << " SR    " << rg()->SR << Use::endl;
-    con.debug() << " CR1   " << rg()->CR1 << Use::endl;
-    con.debug() << " CR2   " << rg()->CR2 << Use::endl;
-    con.debug() << " SQR[0]" << rg()->SQR[0] << Use::endl;
-    con.debug() << " SQR[1]" << rg()->SQR[1] << Use::endl;
-    con.debug() << " SQR[2]" << rg()->SQR[2] << Use::endl;
-    con.debug() << " SMPR1 " << rg()->SMPR[0] << Use::endl;
-    con.debug() << " SMPR2 " << rg()->SMPR[1] << Use::endl;
+  template<typename T>
+  static void dumpRegisters(T& stream)
+  {
+    stream.debug() << "ADC: " << num << Use::endl;
+
+    stream.debug() << " SR    " << rg()->SR << Use::endl;
+    stream.debug() << " CR1   " << rg()->CR1 << Use::endl;
+    stream.debug() << " CR2   " << rg()->CR2 << Use::endl;
+    stream.debug() << " SQR[0]" << rg()->SQR[0] << Use::endl;
+    stream.debug() << " SQR[1]" << rg()->SQR[1] << Use::endl;
+    stream.debug() << " SQR[2]" << rg()->SQR[2] << Use::endl;
+    stream.debug() << " SMPR1 " << rg()->SMPR[0] << Use::endl;
+    stream.debug() << " SMPR2 " << rg()->SMPR[1] << Use::endl;
   }
 };
 #endif // __ADC1_H

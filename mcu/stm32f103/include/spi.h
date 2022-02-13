@@ -1,6 +1,6 @@
 #ifndef SPI_H
 #define SPI_H
-#include "log/log.h"
+#include "log.h"
 #include "nvic.h"
 #include "rcc.h"
 #include <cstdint>

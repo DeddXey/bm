@@ -5,7 +5,7 @@
 #define INLINE __attribute__((__always_inline__)) inline
 #endif
 
-#include "log/log.h."
+#include "log.h."
 #include "nvic.h"
 #include "rcc.h"
 #include "utility.h"
@@ -197,13 +197,12 @@ struct Usart
   static void setBaudRate(uint32_t value)
   {
     if (usartNumber == 1) {
-      uint32_t temp = Rcc::apb2Clk() / 4 + (value >> 1);
+      uint32_t temp = Rcc::apb2Clk()  + (value >> 1);
       temp /= value;
       rg()->BRR = temp;
     }
     else {
-
-      uint32_t temp = Rcc::systemCoreClock() / 2 + (value >> 1);
+      uint32_t temp = Rcc::apb1Clk() + (value >> 1);
       temp /= value;
       rg()->BRR = temp;
     }
