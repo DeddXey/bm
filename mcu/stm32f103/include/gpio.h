@@ -271,12 +271,12 @@ struct Gpio
 };
 
 // Dynamic GPIO section
-GpioRawRegs *gpio_get_regs(const uint8_t port)
+inline GpioRawRegs *gpio_get_regs(const uint8_t port)
 {
   return reinterpret_cast<GpioRawRegs *>(gpio_regs[port - 'A']);
 }
 
-void gpio_set_mode(const uint8_t          port,
+inline void gpio_set_mode(const uint8_t          port,
                    const PinMode          mode,
                    const PinConfiguration configuration,
                    const uint8_t          pin)
@@ -292,24 +292,24 @@ void gpio_set_mode(const uint8_t          port,
     (gpio_get_regs(port)->CR[index] & (~mask)) | value;
 }
 
-void gpio_set_pin(const uint8_t port, const uint8_t pin)
+inline void gpio_set_pin(const uint8_t port, const uint8_t pin)
 {
   gpio_get_regs(port)->BSRR = gpio_get_regs(port)->BSRR | (1 << pin);
 }
 
-void gpio_reset_pin(const uint8_t port, const uint8_t pin)
+inline void gpio_reset_pin(const uint8_t port, const uint8_t pin)
 {
   gpio_get_regs(port)->BSRR = gpio_get_regs(port)->BSRR | (1 << (pin + 16));
 }
 
-void gpio_set_out(const uint8_t port, const uint8_t pin, const bool val)
+inline void gpio_set_out(const uint8_t port, const uint8_t pin, const bool val)
 {
   const uint32_t mask  = ~(1 << pin);
   const uint32_t value = val << pin;
   gpio_get_regs(port)->ODR = (gpio_get_regs(port)->ODR & (~mask)) | value;
 }
 
-bool gpio_get_pin(const uint8_t port, const uint8_t pin)
+inline bool gpio_get_pin(const uint8_t port, const uint8_t pin)
 {
   return gpio_get_regs(port)->IDR & (1 << pin);
 }
