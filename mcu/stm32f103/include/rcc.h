@@ -36,7 +36,7 @@ struct Rcc
 
   enum class Ppre : uint8_t
   {
-    hclk      = 0b0,
+    hclkDiv1  = 0b0,
     hclkDiv2  = 0b100,
     hclkDiv4  = 0b101,
     hclkDiv8  = 0b110,
@@ -45,7 +45,7 @@ struct Rcc
 
   enum class Hpre : uint8_t
   {
-    hclk       = 0b0,
+    hclkDiv1   = 0b0,
     hclkDiv2   = 0b1000,
     hclkDiv4   = 0b1001,
     hclkDiv8   = 0b1010,
@@ -771,6 +771,10 @@ struct Rcc
     tl::setRegister(rg()->CFGR, CFGR::PPRE1, static_cast<uint16_t>(prescaler));
   }
 
+  static void setAhbPre(Hpre prescaler)
+  {
+    tl::setRegister(rg()->CFGR, CFGR::HPRE, static_cast<uint16_t>(prescaler));
+  }
   ///---------------------------------------------------------------------
   ///
   /// \brief Установка делителя APB2
@@ -811,10 +815,13 @@ struct Rcc
 
     systemCoreClock() = 72000000;
 
+    setAhbPre(Hpre::hclkDiv1);
+
     setApb1Pre(Ppre::hclkDiv2);
-    setApb2Pre(Ppre::hclkDiv2);
-    apb2Clk() = systemCoreClock() / 2;
     apb1Clk() = systemCoreClock() / 2;
+
+    setApb2Pre(Ppre::hclkDiv1);
+    apb2Clk() = systemCoreClock() / 1;
 
     return true;
   }
