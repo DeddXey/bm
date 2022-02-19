@@ -207,18 +207,13 @@ struct Spi
     clockEnable(true);
 
     tl::setRegister(rg()->CR1,
-                    CR1::BR,
-                    static_cast<uint8_t>(baudRate),
-                    CR1::MSTR,
-                    1,
-                    CR1::CPOL,
-                    clockPolarity,
-                    CR1::CPHA,
-                    clockPhase,
-                    CR1::SSM,
-                    softSlaveManagement,
-                    CR1::SSI,
-                    softSlaveSelect);
+                    CR1::BR, static_cast<uint8_t>(baudRate),
+                    CR1::MSTR, 1,
+                    CR1::CPOL, clockPolarity,
+                    CR1::CPHA, clockPhase,
+                    CR1::SSM, softSlaveManagement,
+                    CR1::SSI, softSlaveSelect,
+                    CR1::DFF, 0);
   }
 
   static uint8_t getIrqN()
@@ -337,7 +332,7 @@ struct Spi
 
   static bool is_rx_not_empty()
   {
-    return tl::getRegField(rg()->SR, SR::TXE);
+    return tl::getRegField(rg()->SR, SR::RXNE);
   }
 
   static bool is_busy()
@@ -345,6 +340,10 @@ struct Spi
     return tl::getRegField(rg()->SR, SR::BSY);
   }
 
+  static bool is_overrun()
+  {
+    return tl::getRegField(rg()->SR, SR::OVR);
+  }
 //  static bool wait_for_txe(uint32_t counter) {}
 
   static void printRegs()
