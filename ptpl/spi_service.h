@@ -17,7 +17,7 @@ class SpiService
 {
 protected:
   tl::spinlock_mutex    mtx;
-  constexpr static bool with_print = true;
+  constexpr static bool with_print = false;
 
 public:
   void init()
