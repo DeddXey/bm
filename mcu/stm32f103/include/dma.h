@@ -1,50 +1,44 @@
 ﻿#ifndef __DMA1_H
 #define __DMA1_H
 
-#include "log/log.h"
+#include "terminal.h"
 #include "nvic.h"
 #include "rcc.h"
 #include "utility.h"
 #include <cstdint>
 
 namespace Dma {
-enum DmaDirection
-{
+enum DmaDirection {
   ddPeripheralToMemory = 0b00,
   ddMemoryToPeripheral = 0b01,
 };
 
-enum DataSize
-{
+enum DataSize {
   dsByte     = 0b00,
   dsHalfWord = 0b01,
   dsWord     = 0b10
 };
 
-enum PriorityLevel
-{
+enum PriorityLevel {
   plLow      = 0b00,
   plMedium   = 0b01,
   plHigh     = 0b10,
   plVeryHigh = 0b11
 };
 
-enum Burst
-{
+enum Burst {
   bSingle = 0b00,
   bIncr4  = 0b01,
   bIncr8  = 0b10,
   bIncr16 = 0b11
 };
 
-enum CurrentTarget
-{
+enum CurrentTarget {
   ctMemory0 = 0,
   ctMemory1 = 1
 };
 
-enum FifoThreshold
-{
+enum FifoThreshold {
   ft14   = 0,
   ft12   = 1,
   ft34   = 2,
@@ -58,7 +52,7 @@ template<>
 struct dma_t<1>
 {
   constexpr static uint32_t base = 0x40020000;
-  static void INLINE        clockEnable(const bool en)
+  static void               clockEnable(const bool en)
   {
     Rcc::clockDma1(en);
   }
@@ -67,7 +61,7 @@ template<>
 struct dma_t<2>
 {
   constexpr static uint32_t base = 0;
-  static void INLINE        clockEnable(const bool en)
+  static void               clockEnable(const bool en)
   {
     Rcc::clockDma2(en);
   }
@@ -97,26 +91,20 @@ struct DmaController
     uint32_t IFCR;
   };
 
-  ///---------------------------------------------------------------------
-  ///
   /// \brief Включение тактирования
-  ///
-  INLINE static void clockEnable(const bool en)
+   static void clockEnable(const bool en)
   {
     dma_t<dma>::clockEnable(en);
   }
 
-  ///---------------------------------------------------------------------
-  ///
   /// \brief Получение указателя на регистры
   /// \return указатель на регистры
-  ///
-  INLINE static volatile Regs *rg()
+   static volatile Regs *rg()
   {
     return reinterpret_cast<Regs *volatile>(dma_t<dma>::base);
   }
 
-  //    INLINE static bool getTransferCompleteFlag(uint8_t stream)
+  //     static bool getTransferCompleteFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4 + 1;
   //        uint8_t tmp[2] {offset, 4};
@@ -125,7 +113,7 @@ struct DmaController
   //                                     tmp);
   //    }
 
-  //    INLINE static bool getHalfTransferCompleteFlag(uint8_t stream)
+  //     static bool getHalfTransferCompleteFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4 + 2;
   //        uint8_t tmp[2] {offset, 4};
@@ -134,7 +122,7 @@ struct DmaController
   //                                     tmp);
   //    }
 
-  //    INLINE static bool getTransferErrorFlag(uint8_t stream)
+  //     static bool getTransferErrorFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4 + 3;
   //        uint8_t tmp[2] {offset, 4};
@@ -143,7 +131,7 @@ struct DmaController
   //                                     tmp);
   //    }
 
-  //    INLINE static bool getGlobalIntFlag(uint8_t stream)
+  //     static bool getGlobalIntFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4;
   //        uint8_t tmp[2] {offset, 4};
@@ -152,7 +140,7 @@ struct DmaController
   //                                     tmp);
   //    }
 
-  //    INLINE static void clearTransferCompleteFlag(uint8_t stream)
+  //     static void clearTransferCompleteFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4 + 1;
   //        uint8_t tmp[2] {offset, 4};
@@ -161,7 +149,7 @@ struct DmaController
   //                                     tmp, 1);
   //    }
 
-  //    INLINE static void clearHalfTransferCompleteFlag(uint8_t stream)
+  //     static void clearHalfTransferCompleteFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4 + 2;
   //        uint8_t tmp[2] {offset, 4};
@@ -170,7 +158,7 @@ struct DmaController
   //                                     tmp, 1);
   //    }
 
-  //    INLINE static void clearTransferErrorFlag(uint8_t stream)
+  //     static void clearTransferErrorFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4 + 3;
   //        uint8_t tmp[2] {offset, 4};
@@ -179,7 +167,7 @@ struct DmaController
   //                                     tmp, 1);
   //    }
 
-  //    INLINE static void clearGlobalIntFlag(uint8_t stream)
+  //     static void clearGlobalIntFlag(uint8_t stream)
   //    {
   //        uint8_t offset = stream * 4;
   //        uint8_t tmp[2] {offset, 4};
@@ -188,7 +176,7 @@ struct DmaController
   //                                     tmp, 1);
   //    }
 
-  //    INLINE static void clearAllFlags(uint8_t channel)
+  //     static void clearAllFlags(uint8_t channel)
   //    {
   //        uint8_t offset = channel * 4;
 
@@ -283,17 +271,16 @@ struct DmaChannel
 
   static void printRegs()
   {
-    serialLog << "DMA " << Use::dec << Use::w0 << dma << " channel " << channel
+    con.debug() << "DMA " << Use::dec << Use::w0 << dma << " channel " << channel
               << ": " << Use::endl
               << Use::w8 << Use::hex;
-    serialLog << " CCR:   " << rg()->CCR << Use::endl;
-    serialLog << " CNDTR: " << rg()->CNDTR << Use::endl;
-    serialLog << " CMAR:  " << rg()->CMAR << Use::endl;
-    serialLog << " CPAR:  " << rg()->CPAR << Use::endl;
-    serialLog << " ISR:   " << DmaController<dma>::rg()->ISR << Use::endl;
+    con.debug() << " CCR:   " << rg()->CCR << Use::endl;
+    con.debug() << " CNDTR: " << rg()->CNDTR << Use::endl;
+    con.debug() << " CMAR:  " << rg()->CMAR << Use::endl;
+    con.debug() << " CPAR:  " << rg()->CPAR << Use::endl;
+    con.debug() << " ISR:   " << DmaController<dma>::rg()->ISR << Use::endl;
   }
 
-  //------------------------------------------------------------------------
   static bool getTransferCompleteFlag()
   {
     uint8_t offset = (channel - 1) * 4 + 1;
@@ -302,13 +289,11 @@ struct DmaChannel
     return tl::getRegField(DmaController<dma>::rg()->ISR, tmp);
   }
 
-  //------------------------------------------------------------------------
   static bool isTransferComplete()
   {
     return getTransferCompleteFlag();
   }
 
-  //------------------------------------------------------------------------
   static bool getHalfTransferCompleteFlag()
   {
     uint8_t offset = (channel - 1) * 4 + 2;
@@ -317,7 +302,6 @@ struct DmaChannel
     return tl::getRegField(DmaController<dma>::rg()->ISR, tmp);
   }
 
-  //------------------------------------------------------------------------
   static bool getTransferErrorFlag()
   {
     uint8_t offset = (channel - 1) * 4 + 3;
@@ -326,7 +310,6 @@ struct DmaChannel
     return tl::getRegField(DmaController<dma>::rg()->ISR, tmp);
   }
 
-  //------------------------------------------------------------------------
   static bool getGlobalIntFlag()
   {
     uint8_t offset = (channel - 1) * 4;
@@ -335,7 +318,6 @@ struct DmaChannel
     return tl::getRegField(DmaController<dma>::rg()->ISR, tmp);
   }
 
-  //------------------------------------------------------------------------
   static void clearTransferCompleteFlag()
   {
     uint8_t offset = (channel - 1) * 4 + 1;
@@ -344,7 +326,6 @@ struct DmaChannel
     tl::setRegister(DmaController<dma>::rg()->IFCR, tmp, 1);
   }
 
-  //------------------------------------------------------------------------
   static void clearHalfTransferCompleteFlag()
   {
     uint8_t offset = (channel - 1) * 4 + 2;
@@ -353,7 +334,6 @@ struct DmaChannel
     tl::setRegister(DmaController<dma>::rg()->IFCR, tmp, 1);
   }
 
-  //------------------------------------------------------------------------
   static void clearTransferErrorFlag()
   {
     uint8_t offset = (channel - 1) * 4 + 3;
@@ -362,7 +342,6 @@ struct DmaChannel
     tl::setRegister(DmaController<dma>::rg()->IFCR, tmp, 1);
   }
 
-  //------------------------------------------------------------------------
   static void clearGlobalIntFlag()
   {
     uint8_t offset = (channel - 1) * 4;
@@ -371,7 +350,6 @@ struct DmaChannel
     tl::setRegister(DmaController<dma>::rg()->IFCR, tmp, 1);
   }
 
-  //------------------------------------------------------------------------
   static void clearAllFlags()
   {
     uint8_t offset = (channel - 1) * 4;
@@ -380,109 +358,97 @@ struct DmaChannel
     tl::setRegister(DmaController<dma>::rg()->IFCR, tmp, 0xf);
   }
 
-  ///---------------------------------------------------------------------
-  ///
   /// \brief Получение указателя на регистры
   /// \return указатель на регистры
-  ///
-  //------------------------------------------------------------------------
   constexpr static volatile Regs *rg()
   {
     return reinterpret_cast<volatile Regs *>(DmaChannel_t<dma, channel>::base);
   }
   using Controller = DmaController<dma>;
 
-  //------------------------------------------------------------------------
   static void clockEnable(const bool val)
   {
     Controller::clockEnable(val);
   }
 
-  //------------------------------------------------------------------------
   static void enable(bool en)
   {
     tl::setRegister(rg()->CCR, CCR::EN, en);
   }
 
-  //------------------------------------------------------------------------
-  static void intTransferError(bool en)
+  static void set_transfer_error_interrupt(bool en)
   {
-    rg()->CCR.TEIE = en;
+    tl::setRegister(rg()->CCR, CCR::TEIE, en);
   }
 
-  //------------------------------------------------------------------------
-  static void intHalfTransfer(bool en)
+  static void set_half_transfer_complete_interrupt(bool en)
   {
-    rg()->CCR.HTIE = en;
+    tl::setRegister(rg()->CCR, CCR::HTIE, en);
   }
 
-  //------------------------------------------------------------------------
-  static void intTransferComplete(bool en)
+  static void set_transfer_complete_interrupt(bool en)
   {
     tl::setRegister(rg()->CCR, CCR::TCIE, en);
   }
 
-  //------------------------------------------------------------------------
+  static void set_interrupt(uint32_t                  preemptPriority,
+                             [[maybe_unused]] uint32_t subPriority = 0)
+  {
+    Nvic::setPriority(static_cast<Nvic::IrqType>(DmaChannel_t<dma, channel>::dmaChannelIrq),
+                      preemptPriority); // TODO: add subpriority
+    Nvic::enableIrq(static_cast<Nvic::IrqType>(DmaChannel_t<dma, channel>::dmaChannelIrq));
+  }
+
   static void setDmaDirection(Dma::DmaDirection dir)
   {
     tl::setRegister(rg()->CCR, CCR::DIR, dir);
   }
 
-  //------------------------------------------------------------------------
   static void circularMode(bool en)
   {
-    rg()->CCR.CIRC = en;
+    tl::setRegister(rg()->CCR, CCR::CIRC, en);
   }
 
-  //------------------------------------------------------------------------
   static void peripheralIncrement(bool en)
   {
-    rg()->CCR.PINC = en;
+    tl::setRegister(rg()->CCR, CCR::PINC, en);
   }
 
-  //------------------------------------------------------------------------
   static void memoryIncrement(bool en)
   {
     tl::setRegister(rg()->CCR, CCR::MINC, en);
   }
 
-  //------------------------------------------------------------------------
   static void setPeripheralDataSize(Dma::DataSize sz)
   {
     tl::setRegister(rg()->CCR, CCR::PSIZE, sz);
   }
 
-  //------------------------------------------------------------------------
   static void setMemoryDataSize(Dma::DataSize sz)
   {
     tl::setRegister(rg()->CCR, CCR::MSIZE, sz);
   }
 
-  //------------------------------------------------------------------------
   static void setPriorityLevel(Dma::PriorityLevel pl)
   {
     tl::setRegister(rg()->CCR, CCR::PL, static_cast<uint8_t>(pl));
   }
 
-  //------------------------------------------------------------------------
   static void setMemoryAddress0(uint32_t address)
   {
     rg()->CMAR = address;
   }
 
-  //------------------------------------------------------------------------
   static void setPeripheralAddress(uint32_t address)
   {
     rg()->CPAR = address;
   }
 
-  //------------------------------------------------------------------------
   static void setTransferSize(uint32_t sz)
   {
     rg()->CNDTR = sz;
   }
 
-  //------------------------------------------------------------------------
   static Nvic::IrqType getIrqNumber()
   {
     return DmaChannel_t<dma, channel>::dmaChannelIrq;

@@ -125,5 +125,16 @@ struct Afio
     rg()->EXTICR[index] =
       (rg()->EXTICR[index] & ~(0b1111 << pos)) | (reg << pos);
   }
+
+  enum class Tim1Remap {
+    no      = 0,
+    partial = 0b01,
+    full    = 0b11
+  };
+
+  static void remapTim1(Tim1Remap remap)
+  {
+    tl::setRegister(rg()->MAPR, MAPR::TIM1_REMAP, static_cast<uint8_t>(remap));
+  }
 };
 #endif // __AFIO_H
