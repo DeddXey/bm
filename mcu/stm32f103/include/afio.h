@@ -136,5 +136,10 @@ struct Afio
   {
     tl::setRegister(rg()->MAPR, MAPR::TIM1_REMAP, static_cast<uint8_t>(remap));
   }
+
+  static void remapi2c(bool remap)
+  {
+    tl::setRegister(rg()->MAPR, MAPR::I2C1_REMAP, static_cast<uint8_t>(remap));
+  }
 };
 #endif // __AFIO_H
