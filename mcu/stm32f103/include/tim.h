@@ -459,7 +459,7 @@ struct Tim
     rg()->ARR = arr;
   }
 
-  static void setUpdateInterrupt(uint32_t                  priorityGroup,
+  static void setUpdateInterrupt([[maybe_unused]] uint32_t                  priorityGroup,
                                  uint32_t                  preemptPriority,
                                  [[maybe_unused]] uint32_t subPriority = 0)
   {
@@ -509,27 +509,25 @@ struct Tim
 
   static void enableUpdateDma(bool value)
   {
-    rg()->DIER.UDE = value;
+    tl::setRegister(rg()->DIER, DIER::UDE, value);
   }
 
   static void clearUpdateInterruptFlag()
   {
-    rg()->SR.UIF = 0;
+    tl::setRegister(rg()->SR, SR::UIF, 0);
   }
 
   static bool updateInterruptFlag()
   {
-    return (rg()->SR.UIF == 1);
+    return tl::getRegField(rg()->SR, SR::UIF);
   }
 
   static void enableMainOutput([[maybe_unused]] const bool value)
   {
-
     if constexpr ((num == 1) || (num == 8)) {
-      rg()->BDTR.MOE = value;
+      tl::setRegister(rg()->BDTR, BDTR::MOE, value);
     }
-
-  } // TODO add specialization
+  }
 
   static void selectTi1(Timer::Ti1Selection selection)
   {
@@ -622,6 +620,16 @@ struct Tim
   static uint8_t getIrqnUp()
   {
     return tim_t<num>::UP_IRQn;
+  }
+  static void set_dba_dbl(uint8_t dba, uint8_t dbl)
+  {
+    tl::setRegister(rg()->DCR, DCR::DBA, dba,
+                    DCR::DBL, dbl);
+  }
+
+  static void set_dead_time(uint8_t dead_time)
+  {
+    tl::setRegister(rg()->BDTR, BDTR::DTG, dead_time);
   }
 };
 
