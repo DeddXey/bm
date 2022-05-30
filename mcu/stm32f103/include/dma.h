@@ -1,7 +1,7 @@
 ﻿#ifndef __DMA1_H
 #define __DMA1_H
 
-#include "log/log.h"
+#include "terminal.h"
 #include "nvic.h"
 #include "rcc.h"
 #include "utility.h"
@@ -283,14 +283,14 @@ struct DmaChannel
 
   static void printRegs()
   {
-    serialLog << "DMA " << Use::dec << Use::w0 << dma << " channel " << channel
+    con.debug() << "DMA " << Use::dec << Use::w0 << dma << " channel " << channel
               << ": " << Use::endl
               << Use::w8 << Use::hex;
-    serialLog << " CCR:   " << rg()->CCR << Use::endl;
-    serialLog << " CNDTR: " << rg()->CNDTR << Use::endl;
-    serialLog << " CMAR:  " << rg()->CMAR << Use::endl;
-    serialLog << " CPAR:  " << rg()->CPAR << Use::endl;
-    serialLog << " ISR:   " << DmaController<dma>::rg()->ISR << Use::endl;
+    con.debug() << " CCR:   " << rg()->CCR << Use::endl;
+    con.debug() << " CNDTR: " << rg()->CNDTR << Use::endl;
+    con.debug() << " CMAR:  " << rg()->CMAR << Use::endl;
+    con.debug() << " CPAR:  " << rg()->CPAR << Use::endl;
+    con.debug() << " ISR:   " << DmaController<dma>::rg()->ISR << Use::endl;
   }
 
   //------------------------------------------------------------------------

@@ -4,6 +4,7 @@
 #include "sync.h"
 #include <cstdint>
 #include <iterator>
+#include "terminal.h"
 
 struct SpiDevice
 {
