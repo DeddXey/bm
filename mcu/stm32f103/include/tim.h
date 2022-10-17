@@ -43,6 +43,23 @@ struct tim_t<3>
   }
 };
 
+template<>
+struct tim_t<4>
+{
+  constexpr static uint32_t base         = 0x40000800;
+  constexpr static uint32_t interruptUp  = Nvic::itTim4;
+  constexpr static uint32_t interruptBrk = Nvic::itTim4;
+  constexpr static uint32_t interruptCc  = Nvic::itTim4;
+  constexpr static uint32_t interruptTrg = Nvic::itTim4;
+
+  static void clockEnable(const bool value)
+  {
+    Rcc::clockTim4(value);
+  }
+};
+
+
+
 struct Timer
 {
 
@@ -459,7 +476,7 @@ struct Tim
     rg()->ARR = arr;
   }
 
-  static void setUpdateInterrupt(uint32_t                  priorityGroup,
+  static void setUpdateInterrupt(/*uint32_t                  priorityGroup,*/
                                  uint32_t                  preemptPriority,
                                  [[maybe_unused]] uint32_t subPriority = 0)
   {
@@ -475,6 +492,30 @@ struct Tim
     Nvic::setPriority(static_cast<Nvic::IrqType>(tim_t<num>::interruptCc),
                       preemptPriority); // TODO: add subpriority
     Nvic::enableIrq(static_cast<Nvic::IrqType>(tim_t<num>::interruptCc));
+  }
+
+  static void clear_cc_int_flag(uint8_t channel)
+  {
+    const uint16_t mask = ~(1 << channel);
+    rg()->SR = rg()->SR & mask;
+
+  }
+
+  static void clear_update_int_flag()
+  {
+    const uint16_t mask = ~(1);
+    rg()->SR = rg()->SR & mask;
+
+  }
+
+  static bool is_cc_int(uint8_t channel)
+  {
+    return (rg()->SR & (1 << channel)) != 0;
+  }
+
+  static bool is_update_int()
+  {
+    return ((rg()->SR & 1) != 0);
   }
 
   static void enableUpdateInterrupt(bool value)
@@ -536,19 +577,27 @@ struct Tim
     rg()->CR2.TI1S = selection;
   }
 
-  static void selectSlaveMode(Timer::SlaveMode mode)
+  static void select_slave_mode(Timer::SlaveMode mode)
   {
-    rg()->SMCR.SMS = mode;
+    tl::setRegister(rg()->SMCR,
+                    SMCR::SMS,
+                    static_cast<uint8_t>(mode));
   }
 
-  static void selectSlaveTrigger(Timer::TriggerSelection selection)
+  static void select_slave_trigger(Timer::TriggerSelection selection)
   {
-    rg()->SMCR.TS = selection;
+    tl::setRegister(rg()->SMCR,
+                    SMCR::TS,
+                    static_cast<uint8_t>(selection));
   }
 
   static uint32_t getCounter()
   {
     return rg()->CNT.CNTK;
+  }
+  static uint32_t getCc(uint8_t channel)
+  {
+    return rg()->CCR[channel - 1];
   }
 
   static void setCcMode(uint8_t channel, Timer::CcMode mode)
@@ -598,7 +647,7 @@ struct Tim
     rg()->CCER = (rg()->CCER & (~mask)) | value;
   }
 
-  static void enableCcOutput(uint8_t channel, bool value)
+  static void enableCc(uint8_t channel, bool value)
   {
     uint32_t mask  = 1U << ((channel - 1) * 4);
     uint32_t val = static_cast<uint32_t>(value) << ((channel - 1) * 4);

@@ -134,6 +134,13 @@ struct cpu {
         return result;
     }
 
+    static uint32_t get_msp(void)
+    {
+      uint32_t __regMainStackPointer;
+      __asm volatile ("mrs %0, msp": "=r" (__regMainStackPointer));
+      return(__regMainStackPointer);
+    }
+
 
 };
 

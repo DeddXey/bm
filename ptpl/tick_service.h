@@ -53,7 +53,7 @@ public:
     if (in_progress) {
       if ((tick_.get_ticks() - start_ticks) >= delay) {
         in_progress = false;
-        con.debug() << "DelayTimerExpired\n";
+//        con.debug() << "DelayTimerExpired\n";
         return true;
       }
     }

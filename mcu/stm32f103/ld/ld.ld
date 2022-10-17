@@ -31,7 +31,8 @@
 ENTRY(Reset)
 
 /* Highest address of the user mode stack */
-_estack = 0x200040f8;    /* end of RAM */
+/*_estack = 0x20002710;    /* end of RAM */
+/*_estack = 0x200040f8;    /* end of RAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
@@ -40,14 +41,14 @@ _Min_Stack_Size = 0x200; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 128K
+FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 20K
 /*CCMRAM (rw)      : ORIGIN = 0x10000000, LENGTH = 64K
 FMCRAM (rw)      : ORIGIN = 0xC00F0000, LENGTH = 8M
 BACKUP (rw)      : ORIGIN = 0x40024000, LENGTH = 4k*/
 
 }
-/*_estack = ORIGIN(RAM) + LENGTH(RAM);*/
+_estack = ORIGIN(RAM) + LENGTH(RAM);
 /* Define output sections */
 SECTIONS
 {

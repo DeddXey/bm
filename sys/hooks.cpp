@@ -7,7 +7,7 @@
 //#include "terminalconfig.h"
 
 #include "utility.h"
-
+#include "instructions.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -140,7 +140,7 @@ caddr_t _sbrk(int incr)
     }
     prev_heap_end = heap_end;
 
-    char * stack = (char*) __get_MSP();
+    char * stack = (char*) cpu::get_msp();
     if (heap_end + incr > stack)
     {
 //        const char * err = "Heap and stack collision\n";
