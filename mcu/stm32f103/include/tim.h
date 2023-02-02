@@ -451,7 +451,7 @@ struct Tim
 
   static void setCounter(uint16_t counter)
   {
-    rg()->CNT.CNTK = counter;
+    rg()->CNT = counter;
   }
 
   static void setArr(uint16_t arr)
