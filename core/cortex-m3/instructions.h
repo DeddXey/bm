@@ -1,8 +1,5 @@
-#ifndef INSTRUCTIONS3_H
-#define INSTRUCTIONS3_H
-
+#pragma once
 #include <cstdint>
-#include "utility.h"
 
 
 struct cpu {
@@ -10,7 +7,6 @@ struct cpu {
         __asm volatile ("nop");
     }
 
-    //----------------------------------------------------------------------------
     // Synchronization
     static uint32_t ldrex(volatile uint32_t *addr) {
         uint32_t result;
@@ -78,39 +74,31 @@ struct cpu {
         __asm volatile ("dmb 0xF":: :"memory");
     }
 
-    //----------------------------------------------------------------------------
     static void isb(void) {
         __asm volatile ("isb");
     }
 
-    //----------------------------------------------------------------------------
     static void dsb(void) {
         __asm volatile ("dsb");
     }
 
-
-    //----------------------------------------------------------------------------
     // Interrupts
     static void cpsie(void) {
         __asm volatile ("cpsie i");
     }
 
-    //----------------------------------------------------------------------------
     static void cpsid(void) {
         __asm volatile ("cpsid i");
     }
 
-    //----------------------------------------------------------------------------
     static void enableIrq(void) {
         __asm volatile ("cpsie i");
     }
 
-    //----------------------------------------------------------------------------
     static void disableIrq(void) {
         __asm volatile ("cpsid i");
     }
 
-    //----------------------------------------------------------------------------
     static uint32_t rev(uint32_t value) {
         uint32_t result;
         __asm volatile ("rev %0, %1" : "=r" (result) : "r" (value));
@@ -118,7 +106,6 @@ struct cpu {
         return result;
     }
 
-    //----------------------------------------------------------------------------
     static uint32_t rev16u(uint16_t value) {
         uint16_t result;
         __asm volatile ("rev16 %0, %1" : "=r" (result) : "r" (value));
@@ -126,7 +113,6 @@ struct cpu {
         return result;
     }
 
-    //----------------------------------------------------------------------------
     static uint32_t rev16s(int16_t value) {
         int16_t result;
         __asm volatile ("rev16 %0, %1" : "=r" (result) : "r" (value));
@@ -140,9 +126,4 @@ struct cpu {
       __asm volatile ("mrs %0, msp": "=r" (__regMainStackPointer));
       return(__regMainStackPointer);
     }
-
-
 };
-
-
-#endif //INSTRUCTIONS3_H
