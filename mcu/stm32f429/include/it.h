@@ -132,10 +132,10 @@ namespace Isr {
 
   void Reset();
   void Nmi();
-  void HardFault();
-  void MemManage();
-  void BusFault();
-  void UsageFault();
+  [[noreturn]] void HardFault();
+  [[noreturn]] void MemManage();
+  [[noreturn]] void BusFault();
+  [[noreturn]] void UsageFault();
   void Svc();
   void DebugMon();
   void PendSv();
