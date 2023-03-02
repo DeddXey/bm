@@ -476,7 +476,7 @@ struct Tim
     rg()->ARR = arr;
   }
 
-  static void setUpdateInterrupt([[maybe_unused]] uint32_t                  priorityGroup,
+  static void setUpdateInterrupt(/*[[maybe_unused]] uint32_t priorityGroup,*/
                                  uint32_t                  preemptPriority,
                                  [[maybe_unused]] uint32_t subPriority = 0)
   {

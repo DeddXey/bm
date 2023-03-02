@@ -1,5 +1,4 @@
-#ifndef UARTBUFFERED_H
-#define UARTBUFFERED_H
+#pragma once
 
 #include "fifo_atomic.h"
 #include "usart.h"
@@ -137,4 +136,4 @@ public:
   }
 };
 
-#endif // UARTBUFFERED_H
+

@@ -171,30 +171,22 @@ struct Usart
     constexpr static uint8_t PSC[]{ 0, 8 }; //< Prescaler value
   };
 
-  ///---------------------------------------------------------------------
-  ///
   /// \brief Получение указателя на регистры
   /// \return указатель на регистры
-  ///
   constexpr static volatile Regs *rg()
   {
     return reinterpret_cast<volatile Regs *>(usart_t<usartNumber>::base);
   }
 
-  ///---------------------------------------------------------------------
-  ///
   /// \brief Включение тактирования
-  ///
   static void clockEnable(bool en)
   {
     usart_t<usartNumber>::clockEnable(en);
   }
 
-  ///
-  /// \brief Set baud rate
+   /// \brief Set baud rate
   /// \param baud rate
-  ///
-  static void setBaudRate(uint32_t value)
+   static void setBaudRate(uint32_t value)
   {
     if (usartNumber == 1) {
       uint32_t temp = Rcc::apb2Clk()  + (value >> 1);
@@ -208,16 +200,13 @@ struct Usart
     }
   }
 
-  ///
   /// \brief Enable USART
   /// \param enable
-  ///
   static void enable(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::UE, en);
   }
 
-  //------------------------------------------------------------------------
   /// \brief Enable TX
   /// \param enable
   static void txEnable(bool en)
@@ -225,7 +214,6 @@ struct Usart
     tl::setRegister(rg()->CR1, CR1::TE, en);
   }
 
-  //------------------------------------------------------------------------
   /// \brief Enable RX
   /// \param enable
   static void rxEnable(bool en)
@@ -233,37 +221,31 @@ struct Usart
     tl::setRegister(rg()->CR1, CR1::RE, en);
   }
 
-  //------------------------------------------------------------------------
   static void defaultEnable(bool en)
   {
     tl::setRegister(rg()->CR1, CR1::RE, en, CR1::TE, en, CR1::UE, en);
   }
 
-  //------------------------------------------------------------------------
   static void setIdleIt(const bool en)
   {
     tl::setRegister(rg()->CR1, CR1::IDLEIE, en);
   }
 
-  //------------------------------------------------------------------------
   static void setRxNotEmptyIt(const bool en)
   {
     tl::setRegister(rg()->CR1, CR1::RXNEIE, en);
   }
 
-  //------------------------------------------------------------------------
   static void setTransferCompleteIt(const bool en)
   {
     tl::setRegister(rg()->CR1, CR1::TCIE, en);
   }
 
-  //------------------------------------------------------------------------
   static void setTxEmptyIt(const bool en)
   {
     tl::setRegister(rg()->CR1, CR1::TCIE, en);
   }
 
-  //------------------------------------------------------------------------
   static void putChar(const unsigned char ch)
   {
     while (!(tl::getRegField(rg()->SR, SR::TXE))) {
@@ -272,41 +254,26 @@ struct Usart
     rg()->DR = ch;
   }
 
-  //------------------------------------------------------------------------
   static void putDr(const unsigned char ch)
   {
     rg()->DR = ch;
   }
-  //------------------------------------------------------------------------
+
   static uint8_t getDr()
   {
     return rg()->DR;
   }
-  //------------------------------------------------------------------------
+
   static bool isTxEmpty()
   {
     return tl::getRegField(rg()->SR, SR::TXE);
   }
 
-  //------------------------------------------------------------------------
   static bool isRxNotEmpty()
   {
     return tl::getRegField(rg()->SR, SR::RXNE);
   }
 
-  //    static void dumpRegisters()
-  //    {
-  //        dbg << "USART: " << usartNumber << Use::endl;
-
-  //        dbg << " SR    " << rg()->SR << Use::endl;
-  //        dbg << " CR1   " << rg()->CR1 << Use::endl;
-  //        dbg << " CR2   " << rg()->CR2 << Use::endl;
-  //        dbg << " CR3   " << rg()->CR3 << Use::endl;
-  //        dbg << " BRR" << rg()->BRR << Use::endl;
-  //        dbg << " GTPR" << rg()->GTPR << Use::endl;
-  //    }
-
-  //------------------------------------------------------------------------
   static bool isOverrun()
   {
     return tl::getRegField(rg()->SR, SR::ORE);

@@ -14,6 +14,7 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 
 set(OBJCOPY "${TOOLCHAIN_PREFIX}objcopy${TOOLCHAIN_POSTFIX}")
 set(SIZE ${TOOLCHAIN_PREFIX}size${TOOLCHAIN_POSTFIX})
+set(OBJDUMP ${TOOLCHAIN_PREFIX}objdump${TOOLCHAIN_POSTFIX})
 
 function(make_hex target)
 add_custom_target(hex
@@ -26,5 +27,12 @@ function(make_size target)
     add_custom_target(size
             DEPENDS ${target}
             COMMAND ${SIZE} ${target}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+endfunction()
+
+function(make_disassembly target)
+    add_custom_target(disassembly
+            DEPENDS ${target}
+            COMMAND ${OBJDUMP} -S ${target} > ${target}.S
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endfunction()
