@@ -4,7 +4,7 @@
 #include "usart.h"
 #include "sync.h"
 
-template<typename Port, int sizeTx = 255, int sizeRx = 255>
+template<typename Port, size_t sizeTx = 255, size_t sizeRx = 255>
 class UartBuffered
 {
 
