@@ -28,7 +28,7 @@ extern int errno;
 /*
  Переменные среды - пустой список.
  */
-char *__env[1] = { 0 };
+char *__env[1] = { nullptr };
 char **environ = __env;
 
 //int _write(int file, char *ptr, int len);
@@ -134,7 +134,7 @@ caddr_t _sbrk(int incr)
     static char *heap_end;
     char *prev_heap_end;
 
-    if (heap_end == 0)
+    if (heap_end == nullptr)
     {
         heap_end = &_ebss;
     }
@@ -198,7 +198,7 @@ int _stat(const char __attribute__((__unused__)) *filepath, struct stat *st)
 
 clock_t _times(struct tms __attribute__((__unused__)) *buf)
 {
-    return -1;
+    return 0;
 }
 
 /*
