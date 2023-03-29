@@ -124,7 +124,7 @@ struct Nvic {
 
     static void setPriorityGrouping(Scb::PriorityGrouping priorityGrouping)
     {
-        Scb::rg()->AIRCR = (Scb::aircrKey << 16) + ((priorityGrouping & 0xf) << Scb::aircrPriGroupPos);
+        Scb::rg()->AIRCR = (Scb::aircrKey << 16U) + ((static_cast<uint32_t>(priorityGrouping)) << Scb::aircrPriGroupPos);
     }
 
     static uint32_t getPriorityGrouping() { return ((Scb::rg()->AIRCR >> Scb::aircrPriGroupPos) & 0x0f); }

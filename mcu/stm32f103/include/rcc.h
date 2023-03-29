@@ -748,7 +748,7 @@ struct Rcc
   ///
   static void pllSet(uint8_t mul)
   {
-    tl::setRegister(rg()->CFGR, CFGR::PLLMUL, mul - 2);
+    tl::setRegister(rg()->CFGR, CFGR::PLLMUL, mul - 2U);
   }
 
   ///---------------------------------------------------------------------

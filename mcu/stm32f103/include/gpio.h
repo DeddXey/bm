@@ -197,16 +197,17 @@ struct Gpio
   /// \brief Установка альтернативной функции
   /// \param val альтернативная функция
   /// \param args список номеров пинов
-  template<typename T>
+//  template<typename T>
   static void
-  setMode(const PinMode mode, const PinConfiguration configuration, const T pos)
+  setMode(const PinMode mode, const PinConfiguration configuration, const uint32_t pos)
   {
-    uint32_t       index = (pos & 0x8) >> 3;
-    const T        pos8  = pos & 0x7;
-    uint32_t       mask  = tl::setBitGroup(4, (1 << 4) - 1, pos8);
-    const uint32_t cfg   = mode | (configuration << 2);
+    const uint32_t       index = (pos & 0x8) >> 3;
+    const uint32_t        pos8  = pos & 0x7;
+    const uint32_t       mask  = tl::setBitGroup(4, (1 << 4) - 1, pos8);
+    const auto cfg   =
+      static_cast<uint32_t>(mode | (configuration << 2));
 
-    uint32_t value = tl::setBitGroup(4, cfg, pos8);
+    const uint32_t value = tl::setBitGroup(4, cfg, pos8);
 
     rgRaw()->CR[index] = (rgRaw()->CR[index] & (~mask)) | value;
   }
@@ -214,18 +215,19 @@ struct Gpio
   /// \brief Установка альтернативной функции
   /// \param val альтернативная функция
   /// \param args список номеров пинов
-  template<typename T, typename... Args>
+  template</*typename T, */typename... Args>
   static void setMode(const PinMode          mode,
                       const PinConfiguration configuration,
-                      const T                pos,
+                      const uint32_t               pos,
                       const Args... args)
   {
-    uint32_t       index = (pos & 0x8) >> 3;
-    const T        pos8  = pos & 0x7;
-    uint32_t       mask  = tl::setBitGroup(4, (1 << 4) - 1, pos8);
-    const uint32_t cfg   = mode | (configuration << 2);
+    const uint32_t       index = (pos & 0x8) >> 3U;
+    const uint32_t        pos8  = pos & 0x7;
+    const uint32_t       mask  = tl::setBitGroup(4U, (1U << 4U) - 1U, pos8);
+    const auto cfg   =
+      static_cast<uint32_t>(mode | (configuration << 2U));
 
-    uint32_t value = tl::setBitGroup(4, cfg, pos8);
+    const uint32_t value = tl::setBitGroup(4U, cfg, pos8);
 
     rgRaw()->CR[index] = (rgRaw()->CR[index] & (~mask)) | value;
 
@@ -235,7 +237,7 @@ struct Gpio
   template<typename... Args>
   static void setPin(const Args... args)
   {
-    uint32_t value = tl::setBitGroup(1, 1, args...);
+    uint32_t value = tl::setBitGroup(1U, 1U, args...);
 
     rgRaw()->BSRR = rgRaw()->BSRR | value;
   }
@@ -245,7 +247,7 @@ struct Gpio
   template<typename... Args>
   static void resetPin(const Args... args)
   {
-    uint32_t value = tl::setBitGroup(1, 1, args...);
+    uint32_t value = tl::setBitGroup(1U, 1U, args...);
 
     rgRaw()->BSRR = rgRaw()->BSRR | (value << 16);
   }
@@ -256,8 +258,8 @@ struct Gpio
   template<typename... Args>
   static void setOut(uint8_t val, const Args... args)
   {
-    uint32_t mask  = tl::setBitGroup(1, (1 << 1) - 1, args...);
-    uint32_t value = tl::setBitGroup(1, val, args...);
+    uint32_t mask  = tl::setBitGroup(1U, (1U << 1U) - 1U, args...);
+    uint32_t value = tl::setBitGroup(1U, val, args...);
 
     rgRaw()->ODR = (rgRaw()->ODR & (~mask)) | value;
   }
@@ -266,7 +268,7 @@ struct Gpio
   /// \param pin номер пина
   static bool get(uint8_t pin)
   {
-    return (rgRaw()->IDR & (1 << pin));
+    return (rgRaw()->IDR & (1U << pin));
   }
 };
 
@@ -281,12 +283,13 @@ inline void gpio_set_mode(const uint8_t          port,
                    const PinConfiguration configuration,
                    const uint8_t          pin)
 {
-  uint32_t       index = (pin & 0x8) >> 3;
+  uint32_t       index = (pin & 0x8) >> 3U;
   const uint8_t  pos8  = pin & 0x7;
-  uint32_t       mask  = tl::setBitGroup(4, (1 << 4) - 1, pos8);
-  const uint32_t cfg   = mode | (configuration << 2);
+  uint32_t       mask  = tl::setBitGroup(4U, (1U << 4U) - 1U, pos8);
+  const auto cfg   =
+    static_cast<uint32_t>(mode | (configuration << 2U));
 
-  uint32_t value = tl::setBitGroup(4, cfg, pos8);
+  uint32_t value = tl::setBitGroup(4U, cfg, pos8);
 
   gpio_get_regs(port)->CR[index] =
     (gpio_get_regs(port)->CR[index] & (~mask)) | value;
@@ -304,8 +307,8 @@ inline void gpio_reset_pin(const uint8_t port, const uint8_t pin)
 
 inline void gpio_set_out(const uint8_t port, const uint8_t pin, const bool val)
 {
-  const uint32_t mask  = ~(1 << pin);
-  const uint32_t value = val << pin;
+  const uint32_t mask  = ~(1U << pin);
+  const auto value = static_cast<uint32_t>(static_cast<uint32_t>(val) << pin);
   gpio_get_regs(port)->ODR = (gpio_get_regs(port)->ODR & (~mask)) | value;
 }
 

@@ -456,7 +456,7 @@ struct Tim
 
   static void setArr(uint16_t arr)
   {
-    rg()->ARR.ARR = arr;
+    rg()->ARR = arr;
   }
 
   static void setUpdateRequestSource(bool urs)
@@ -496,14 +496,14 @@ struct Tim
 
   static void clear_cc_int_flag(uint8_t channel)
   {
-    const uint16_t mask = ~(1 << channel);
+    const auto mask = static_cast<uint16_t>(~(1 << channel));
     rg()->SR = rg()->SR & mask;
 
   }
 
   static void clear_update_int_flag()
   {
-    const uint16_t mask = ~(1);
+    const auto mask = static_cast<uint16_t>(~(1));
     rg()->SR = rg()->SR & mask;
 
   }
@@ -661,6 +661,16 @@ struct Tim
 
     rg()->CCER = (rg()->CCER & (~mask)) | val;
   }
+
+
+  static void enableCcOutput(uint8_t channel, bool en)
+  {
+    uint32_t mask  = 1U << ((channel - 1) * 4);
+    uint32_t value = static_cast<uint32_t>(en) << ((channel - 1) * 4);
+
+    rg()->CCER = (rg()->CCER & (~mask)) | value;
+  }
+
 
   static void setCcValue(uint8_t channel, uint32_t value)
   {

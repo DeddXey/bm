@@ -45,7 +45,7 @@ struct SysTick
                     CTRL::TICKINT,
                     interrupt,
                     CTRL::ENABLE,
-                    1);
+                    1U);
   }
 
   static uint32_t get_ticks()

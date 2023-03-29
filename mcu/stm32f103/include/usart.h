@@ -221,29 +221,29 @@ struct Usart
     tl::setRegister(rg()->CR1, CR1::RE, en);
   }
 
-  static void defaultEnable(bool en)
+  static void defaultEnable(bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::RE, en, CR1::TE, en, CR1::UE, en);
+    tl::setRegister(rg()->CR1, CR1::RE, static_cast<uint32_t>(value), CR1::TE, value, CR1::UE, value);
   }
 
-  static void setIdleIt(const bool en)
+  static void setIdleIt(const bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::IDLEIE, en);
+    tl::setRegister(rg()->CR1, CR1::IDLEIE, value);
   }
 
-  static void setRxNotEmptyIt(const bool en)
+  static void setRxNotEmptyIt(const bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::RXNEIE, en);
+    tl::setRegister(rg()->CR1, CR1::RXNEIE, static_cast<uint32_t>(value));
   }
 
-  static void setTransferCompleteIt(const bool en)
+  static void setTransferCompleteIt(const bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::TCIE, en);
+    tl::setRegister(rg()->CR1, CR1::TCIE, static_cast<uint32_t>(value));
   }
 
-  static void setTxEmptyIt(const bool en)
+  static void setTxEmptyIt(const bool value)
   {
-    tl::setRegister(rg()->CR1, CR1::TCIE, en);
+    tl::setRegister(rg()->CR1, CR1::TCIE, static_cast<uint32_t>(value));
   }
 
   static void putChar(const unsigned char ch)
@@ -261,7 +261,7 @@ struct Usart
 
   static uint8_t getDr()
   {
-    return rg()->DR;
+    return static_cast<uint8_t>(rg()->DR);
   }
 
   static bool isTxEmpty()

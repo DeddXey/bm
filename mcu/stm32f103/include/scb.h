@@ -246,134 +246,135 @@ struct Scb
 
   static uint16_t getCpuidImplementer()
   {
-    return tl::getRegField(rg()->CPUID, CPUID::Implementer);
+    return static_cast<uint16_t>(
+      tl::getRegField(rg()->CPUID, CPUID::Implementer));
   }
   static uint16_t getCpuidVariant()
   {
-    return tl::getRegField(rg()->CPUID, CPUID::Variant);
+    return static_cast<uint16_t>(tl::getRegField(rg()->CPUID, CPUID::Variant));
   }
   static uint16_t getCpuidConstant()
   {
-    return tl::getRegField(rg()->CPUID, CPUID::Constant);
+    return static_cast<uint16_t>(tl::getRegField(rg()->CPUID, CPUID::Constant));
   }
   static uint16_t getCpuidPartNo()
   {
-    return tl::getRegField(rg()->CPUID, CPUID::PartNo);
+    return static_cast<uint16_t>(tl::getRegField(rg()->CPUID, CPUID::PartNo));
   }
   static uint16_t getCpuidRevision()
   {
-    return tl::getRegField(rg()->CPUID, CPUID::Revision);
+    return static_cast<uint16_t>(tl::getRegField(rg()->CPUID, CPUID::Revision));
   }
 
-  static uint16_t getUfDivByZero()
+  static bool getUfDivByZero()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::DIVBYZERO);
   }
-  static uint16_t getUfUnaligned()
+  static bool getUfUnaligned()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::UNALIGNED);
   }
-  static uint16_t getUfNoCoprocessor()
+  static bool getUfNoCoprocessor()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::NOCP);
   }
-  static uint16_t getUfInvalidPc()
+  static bool getUfInvalidPc()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::INVPC);
   }
-  static uint16_t getUfInvalidState()
+  static bool getUfInvalidState()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::INVSTATE);
   }
-  static uint16_t getUfUndefinedInstruction()
+  static bool getUfUndefinedInstruction()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::UNDEFINSTR);
   }
 
-  static uint16_t getBfValid()
+  static bool getBfValid()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::BFARVALID);
   }
-  static uint16_t getBfFpLazyState()
+  static bool getBfFpLazyState()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::LSPERR);
   }
-  static uint16_t getBfStacking()
+  static bool getBfStacking()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::STKERR);
   }
-  static uint16_t getBfUnStacking()
+  static bool getBfUnStacking()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::UNSTKERR);
   }
-  static uint16_t getBfImprecise()
+  static bool getBfImprecise()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::IMPRECISERR);
   }
-  static uint16_t getBfPrecise()
+  static bool getBfPrecise()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::PRECISERR);
   }
-  static uint16_t getBfInstruction()
+  static bool getBfInstruction()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::IBUSERR);
   }
 
-  static uint16_t getMfValid()
+  static bool getMfValid()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::MMARVALID);
   }
-  static uint16_t getMfFpLazyState()
+  static bool getMfFpLazyState()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::MLSPERR);
   }
-  static uint16_t getMfStacking()
+  static bool getMfStacking()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::MSTKERR);
   }
-  static uint16_t getMfUnStacking()
+  static bool getMfUnStacking()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::MUNSTKERR);
   }
-  static uint16_t getMfDataAccess()
+  static bool getMfDataAccess()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::DACCVIOL);
   }
-  static uint16_t getMfInstructionAccess()
+  static bool getMfInstructionAccess()
   {
     return tl::getRegField(rg()->CFSR_UFSR_BFSR_MMFSR,
                            CFSR_UFSR_BFSR_MMFSR::IACCVIOL);
   }
 
-  static uint16_t getHfVectorTable()
+  static bool getHfVectorTable()
   {
-    return tl::getRegField(rg()->HFSR, HFSR::VECTTBL);
+    return static_cast<bool>(tl::getRegField(rg()->HFSR, HFSR::VECTTBL));
   }
-  static uint16_t getHfForsed()
+  static bool getHfForsed()
   {
-    return tl::getRegField(rg()->HFSR, HFSR::FORCED);
+    return static_cast<bool>(tl::getRegField(rg()->HFSR, HFSR::FORCED));
   }
-  static uint16_t getHfDebug()
+  static bool getHfDebug()
   {
-    return tl::getRegField(rg()->HFSR, HFSR::DEBUG_VT);
+    return static_cast<bool>(tl::getRegField(rg()->HFSR, HFSR::DEBUG_VT));
   }
 
   static uint32_t getMemoryFaultAddress()
