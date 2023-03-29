@@ -46,7 +46,7 @@ void Isr::Reset(void) {
 
 /// \brief __Init_Data
 ///
-void __Init_Data(void)
+void __Init_Data()
 {
     unsigned long *pulSrc, *pulDest;
 
@@ -65,7 +65,9 @@ void __Init_Data(void)
     /* Call constructors */
     unsigned long *ctors;
     for(ctors = &__ctors_start__; ctors < &__ctors_end__; )
-        ((void(*)())(*ctors++))();
+
+        (reinterpret_cast<void(*)()>(*ctors++))();
+//        ((void(*)())(*ctors++))();
 }
 
 
