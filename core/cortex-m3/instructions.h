@@ -113,17 +113,17 @@ struct cpu {
         return result;
     }
 
-    static uint32_t rev16s(int16_t value) {
+    static int16_t rev16s(int16_t value) {
         int16_t result;
         __asm volatile ("rev16 %0, %1" : "=r" (result) : "r" (value));
 
         return result;
     }
 
-    static uint32_t get_msp(void)
+    static uint32_t get_msp()
     {
-      uint32_t __regMainStackPointer;
-      __asm volatile ("mrs %0, msp": "=r" (__regMainStackPointer));
-      return(__regMainStackPointer);
+      uint32_t regMainStackPointer;
+      __asm volatile ("mrs %0, msp": "=r" (regMainStackPointer));
+      return(regMainStackPointer);
     }
 };
