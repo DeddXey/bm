@@ -30,7 +30,7 @@ if (BM_CHIP IN_LIST CORTEX_M4)
     set (FPU 1)
 endif ()
 
-#include("${BM_DIRECTORY}/cmake/crosstools.cmake")
+#include("${BM_DIRECTORY}/cmake/crosstools_arm.cmake")
 include("${BM_DIRECTORY}/cmake/${BM_CHIP}.cmake")
 
 file(GLOB BM_SRCS
