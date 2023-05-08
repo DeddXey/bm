@@ -1,5 +1,4 @@
-add_compile_options(-mcpu=cortex-m3 -mthumb -mfloat-abi=soft -mfpu=fpv4-sp-d16)
-
+set(BLD_PLATFORM_FLAGS "-mcpu=cortex-m3 -mthumb -mfloat-abi=soft")
 
 
 

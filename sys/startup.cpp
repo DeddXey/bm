@@ -48,7 +48,8 @@ void Isr::Reset(void) {
 ///
 void __Init_Data()
 {
-    unsigned long *pulSrc, *pulDest;
+    volatile unsigned long *pulSrc;
+    volatile unsigned long *pulDest;
 
     pulSrc = &_sidata;
 

@@ -1,4 +1,4 @@
-set(BM_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/..)
+set(BM_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../)
 option(USE_DEBUG "Use debug messaging in console port" 1)
 
 if (USE_DEBUG)
@@ -89,7 +89,8 @@ string(CONCAT FLAGS_C
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAGS_C}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAGS_CXX}")
-add_link_options(--specs=nano.specs
+add_link_options(-Xlinker --gc-sections
+        --specs=nano.specs
         --specs=nosys.specs
         -T ${BM_DIRECTORY}/mcu/${BM_CHIP}/ld/ld.ld
         -Wl,-Map,${PROJECT_NAME}.map
